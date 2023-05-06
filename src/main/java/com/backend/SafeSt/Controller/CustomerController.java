@@ -1,7 +1,5 @@
 package com.backend.SafeSt.Controller;
 
-import com.backend.SafeSt.Entity.Customer;
-import com.backend.SafeSt.Request.CategoryReq;
 import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Request.TrustedContactReq;
 import com.backend.SafeSt.Response.MainResponse;
@@ -10,7 +8,6 @@ import com.backend.SafeSt.Util.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
