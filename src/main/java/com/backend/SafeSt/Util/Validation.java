@@ -26,6 +26,22 @@ public class Validation {
         }
         return true;
     }
+    public static boolean validateInt(Object... object) {
+        for (Object s : object) {
+            if(s instanceof Integer) {
+                return true;
+            } else {
+                String string = object.toString();
+
+                try {
+                    Integer.parseInt(string);
+                } catch(Exception e) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     public static boolean validateDouble(Object... object) {
         for (Object s : object) {
             if(s instanceof Double) {

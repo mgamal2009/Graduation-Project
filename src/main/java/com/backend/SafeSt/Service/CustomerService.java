@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -25,18 +26,25 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final TrustedContactRepository trustedContactRepository;
-
     private final CustomerMapper customerMapper;
     private final TrustedContactMapper trustedContactMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public TrustedContactModel addTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
-        Customer c = checkLoggedIn(req, auth);
+        Customer c = checkLoggedIn(req.getUserId(), auth);
+        if (!(Validation.validateString(req.getEmail()))) {
+            throw new Exception("Email couldn't be empty");
+        }
         Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
         if (trusted.isEmpty()) {
             throw new Exception("Email not found");
         }
         Customer foundTrusted = trusted.get();
+        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(c.getId(), foundTrusted.getId());
+        if (found.isPresent()){
+            throw new Exception("Already In Your List");
+        }
         var trustedContact = TrustedContact.builder()
                 .customer(c)
                 .trusted(foundTrusted)
@@ -45,55 +53,57 @@ public class CustomerService {
         return trustedContactMapper.convertEntityToModel(trustedContact);
     }
 
-    private static Customer checkLoggedIn(TrustedContactReq req, Authentication auth) throws Exception {
+    public static Customer checkLoggedIn(int id, Authentication auth) throws Exception {
         Customer c = (Customer) auth.getPrincipal();
-        if (!Objects.equals(c.getId(), req.getUserId())) {
+        if (!Objects.equals(c.getId(), id)) {
             throw new Exception("Authentication Error");
-        }
-        if (!(Validation.validateString(req.getEmail()))) {
-            throw new Exception("Email couldn't be empty");
         }
         return c;
     }
 
+    @Transactional
     public boolean deleteTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
-        checkLoggedIn(req, auth);
+        Customer customer = checkLoggedIn(req.getUserId(), auth);
         Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
         if (trusted.isEmpty()) {
             throw new Exception("Email not found");
         }
         Customer foundTrusted = trusted.get();
-        trustedContactRepository.deleteByTrusted_Id(foundTrusted.getId());
+        trustedContactRepository.deleteTrustedContactByCustomer_IdAndTrusted_Id(customer.getId(), foundTrusted.getId());
         return true;
     }
-    public CustomerModel updatePersonalInfo(CustomerReq req) throws Exception {
-        Optional<Customer> c = customerRepository.findByEmail(req.getEmail());
-        if (c.isEmpty()) {
-            throw new Exception("Customer Not Found !!");
-        }
-        Customer customer = c.get();
+    public CustomerModel updatePersonalInfo(CustomerReq req,Authentication auth) throws Exception {
+        Customer customer =  checkLoggedIn(req.getId(), auth);
         if (!req.getFirstname().isBlank()){
             customer.setFirstName(req.getFirstname());
         }if (!req.getLastname().isBlank()){
             customer.setLastName(req.getLastname());
-        }if (!req.getFirstname().isBlank()){
-            customer.setFirstName(req.getFirstname());
-        }if (!req.getPassword().isBlank()){
-            if (!req.getConfirmationPassword().isBlank()&& !req.getOldPassword().isBlank()){
-                if (req.getPassword().equals(req.getConfirmationPassword())){
-                    customer.setPassword(passwordEncoder.encode(req.getPassword()));
+        }
+        if (req.getPassword() != null && req.getConfirmationPassword() != null && req.getOldPassword() != null ){
+            if (!req.getPassword().isBlank()){
+                if (!req.getConfirmationPassword().isBlank()&& !req.getOldPassword().isBlank()){
+                    if (req.getPassword().equals(req.getConfirmationPassword())){
+                        customer.setPassword(passwordEncoder.encode(req.getPassword()));
+                    }else{
+                        throw new Exception("Password and Confirmation Password isn't the same");
+                    }
                 }else{
-                    throw new Exception("Password and Confirmation Password isn't the same");
+                    throw new Exception("Old Password and Confirmation Password can't be empty");
                 }
-            }else{
-                throw new Exception("Old Password and Confirmation Password can't be empty");
             }
-        }if (!req.getPhoneNumber().isBlank()){
+        }
+        if (req.getPassword() != null || req.getConfirmationPassword() != null || req.getOldPassword() != null ) {
+            throw new Exception("Passwords can't be empty");
+        }
+        if (!req.getPhoneNumber().isBlank()){
             customer.setPhoneNumber(req.getPhoneNumber());
         }
         customerRepository.save(customer);
         return customerMapper.convertEntityToModel(customer);
     }
 
-
+    public CustomerModel getPersonalInfo(CustomerReq req, Authentication auth) throws Exception {
+        Customer customer =  checkLoggedIn(req.getId(), auth);
+        return customerMapper.convertEntityToModel(customer);
+    }
 }

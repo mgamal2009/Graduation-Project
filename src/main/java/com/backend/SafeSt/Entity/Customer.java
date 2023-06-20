@@ -27,6 +27,7 @@ public class Customer implements UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
+    private boolean enabled = false;
 
     @OneToMany(mappedBy = "customer")
     private List<TrustedContact> trustedContacts;
@@ -77,6 +78,10 @@ public class Customer implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
+    }
+
+    public void setEnabled(boolean b){
+        this.enabled = b;
     }
 }

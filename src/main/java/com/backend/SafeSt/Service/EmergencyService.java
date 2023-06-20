@@ -26,8 +26,8 @@ public class EmergencyService {
     private final EmergencyMapper emergencyMapper;
     @Transactional
     public EmergencyModel createEmergency(EmergencyReq req) throws Exception  {
-        if (!(Validation.validateLong(req.getCategoryId()))){
-            throw new Exception("Category Id should be Long");
+        if (!(Validation.validateInt(req.getCategoryId()))){
+            throw new Exception("Category Id should be Integer");
         }
         Optional<Category> c = categoryRepository.findById(req.getCategoryId());
         if (c.isEmpty()){

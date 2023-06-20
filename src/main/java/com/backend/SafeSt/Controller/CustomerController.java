@@ -30,21 +30,32 @@ public class CustomerController {
     public MainResponse deleteTrustedContact(@RequestBody TrustedContactReq req , Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
-                    ResponseMessage.CREATED,
+                    ResponseMessage.DELETED,
                     customerService.deleteTrustedContact(req,auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
     @PutMapping(value = "/updatePersonalInfo")
-    public MainResponse updatePersonalInfo(@RequestBody CustomerReq req) {
+    public MainResponse updatePersonalInfo(@RequestBody CustomerReq req, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
-                    ResponseMessage.CREATED,
-                    customerService.updatePersonalInfo(req));
+                    ResponseMessage.UPDATED,
+                    customerService.updatePersonalInfo(req,auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+    @GetMapping(value = "/getPersonalInfo")
+    public MainResponse getPersonalInfo(@RequestBody CustomerReq req, Authentication auth) {
+        try {
+            return new MainResponse(HttpStatus.OK,
+                    ResponseMessage.EXECUTED,
+                    customerService.getPersonalInfo(req,auth));
+        } catch (Exception exception) {
+            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
+
 
 }

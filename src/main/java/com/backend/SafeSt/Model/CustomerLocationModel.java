@@ -9,4 +9,5 @@ public class CustomerLocationModel {
     private Integer id;
     private double longitude;
     private double latitude;
+    private Integer customerId;
 }

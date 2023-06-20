@@ -1,5 +1,6 @@
 package com.backend.SafeSt.Repository;
 
+import com.backend.SafeSt.Entity.Customer;
 import com.backend.SafeSt.Entity.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,10 +11,10 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token,Integer> {
-    @Query("""
+    /*@Query("""
             select t from Token t inner join Customer u on t.customer.id = u.id
             where u.id = :customerId and (t.expired = false or t.revoked = false)
-            """)
-    List<Token> findAllValidTokensByCustomer(Integer customerId);
+            """)*/
+    List<Token> findAllTokensByCustomer(Customer customer);
     Optional<Token> findByToken(String token);
 }

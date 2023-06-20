@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerLocationReq {
-    private Integer id;
     private double longitude;
     private double latitude;
     private Integer customerId;

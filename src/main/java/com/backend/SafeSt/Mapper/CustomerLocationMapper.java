@@ -13,6 +13,7 @@ public class CustomerLocationMapper {
                 .id(customerLocation.getId())
                 .longitude(customerLocation.getLongitude())
                 .latitude(customerLocation.getLatitude())
+                .customerId(customerLocation.getCustomer().getId())
                 .build();
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class TrustedContactMapper {
     public TrustedContactModel convertEntityToModel(TrustedContact trustedContact){
         return TrustedContactModel.builder()
-                .addedOrDeleted(true)
                 .email(trustedContact.getTrusted().getEmail())
                 .build();
     }

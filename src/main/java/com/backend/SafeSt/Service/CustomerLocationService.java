@@ -11,6 +11,7 @@ import com.backend.SafeSt.Util.Validation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,16 +21,16 @@ import java.util.Optional;
 public class CustomerLocationService {
 
     private final CustomerLocationRepository customerLocationRepository;
-    private final CustomerRepository customerRepository;
     private final CustomerLocationMapper customerLocationMapper;
 
     @Transactional
-    public CustomerLocationModel updateCustomerLocation(CustomerLocationReq req) throws Exception {
+    public CustomerLocationModel updateCustomerLocation(CustomerLocationReq req, Authentication auth) throws Exception {
+        Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
         if (!(Validation.validateDouble(req.getLatitude(), req.getLongitude()))) {
             throw new Exception("Longitude and Latitude Should be Double");
         }
-        if (!(Validation.validateLong(req.getCustomerId()))) {
-            throw new Exception("Customer Id Should be Long");
+        if (!(Validation.validateInt(req.getCustomerId()))) {
+            throw new Exception("Customer Id Should be Integer");
         }
         CustomerLocation location;
         Optional<CustomerLocation> l = customerLocationRepository.findByCustomer_Id(req.getCustomerId());
@@ -38,12 +39,8 @@ public class CustomerLocationService {
             location.setLongitude(req.getLongitude());
             location.setLatitude(req.getLatitude());
         } else {
-            Optional<Customer> c = customerRepository.findById(req.getCustomerId());
-            if (c.isEmpty()) {
-                throw new Exception("Customer not Found");
-            }
             location = CustomerLocation.builder()
-                    .customer(c.get())
+                    .customer(c)
                     .longitude(req.getLongitude())
                     .latitude(req.getLatitude())
                     .build();
