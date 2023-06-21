@@ -56,6 +56,17 @@ public class CustomerController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+    @GetMapping(value = "/getTrustedInfo")
+    public MainResponse getTrustedInfo(@RequestBody TrustedContactReq req, Authentication auth) {
+        try {
+            return new MainResponse(HttpStatus.OK,
+                    ResponseMessage.EXECUTED,
+                    customerService.getTrustedInfo(req,auth));
+        } catch (Exception exception) {
+            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
+
 
 
 }

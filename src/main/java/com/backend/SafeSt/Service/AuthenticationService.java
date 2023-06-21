@@ -48,14 +48,17 @@ public class AuthenticationService {
         if (customerRepository.findByEmail(req.getEmail()).isPresent()) {
             throw new Exception("This Email is already used");
         }
-        var customer = Customer.builder()
-                .firstName(req.getFirstname())
-                .lastName(req.getLastname())
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .phoneNumber(req.getPhoneNumber())
-                .role(Role.Customer)
-                .build();
+        if(!req.getPassword().equals(req.getConfirmationPassword())) {
+            throw new Exception("Password and Confirmation Password Should be the Same!!");
+        }
+            var customer = Customer.builder()
+                    .firstName(req.getFirstname())
+                    .lastName(req.getLastname())
+                    .email(req.getEmail())
+                    .password(passwordEncoder.encode(req.getPassword()))
+                    .phoneNumber(req.getPhoneNumber())
+                    .role(Role.Customer)
+                    .build();
         var savedCustomer = customerRepository.save(customer);
         var location = CustomerLocation.builder()
                 .customer(savedCustomer)

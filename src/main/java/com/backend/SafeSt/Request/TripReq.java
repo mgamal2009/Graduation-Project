@@ -26,7 +26,5 @@ public class TripReq {
     private double destinationLongitude;
     private double destinationLatitude;
 
-    private Integer sourceId;
-    private Integer destinationId;
     private Integer customerId;
 }

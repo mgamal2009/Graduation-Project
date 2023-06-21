@@ -106,4 +106,20 @@ public class CustomerService {
         Customer customer =  checkLoggedIn(req.getId(), auth);
         return customerMapper.convertEntityToModel(customer);
     }
+    public CustomerModel getTrustedInfo(TrustedContactReq req, Authentication auth) throws Exception {
+        checkLoggedIn(req.getUserId(), auth);
+        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+        if (trusted.isEmpty()) {
+            throw new Exception("Email not found");
+        }
+        Customer foundTrusted = trusted.get();
+        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
+        if (found.isEmpty()) {
+            throw new Exception("Email not in Trusted Contacts");
+        }
+        return CustomerModel.builder()
+                .email(foundTrusted.getEmail())
+                .phoneNumber(foundTrusted.getPhoneNumber())
+                .build();
+    }
 }
