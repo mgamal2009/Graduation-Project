@@ -24,7 +24,7 @@ public class ConfirmationToken {
 
     private LocalDateTime createdDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name = "customer_id")
     private Customer customer;
     public ConfirmationToken(Customer customer){

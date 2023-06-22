@@ -23,7 +23,7 @@ public class Token {
     private boolean expired;
     private boolean revoked;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

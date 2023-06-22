@@ -17,10 +17,10 @@ public class TrustedContact {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "trusted_id")
     private Customer trusted;
 

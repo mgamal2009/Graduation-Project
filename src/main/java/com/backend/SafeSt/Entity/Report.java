@@ -21,10 +21,10 @@ public class Report {
     private float score;
     private Timestamp date;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "location_id")
     private Location location;
     @OneToMany(mappedBy = "report")

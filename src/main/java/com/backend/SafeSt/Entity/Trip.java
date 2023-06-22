@@ -26,7 +26,7 @@ public class Trip {
     private double destinationLongitude;
     private double destinationLatitude;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

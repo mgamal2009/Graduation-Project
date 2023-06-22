@@ -23,7 +23,7 @@ public class ResetToken {
     private LocalDateTime createdDate;
     private boolean used;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

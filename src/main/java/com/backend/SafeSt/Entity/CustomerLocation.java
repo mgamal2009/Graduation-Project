@@ -18,7 +18,7 @@ public class CustomerLocation {
     private double longitude;
     private double latitude;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

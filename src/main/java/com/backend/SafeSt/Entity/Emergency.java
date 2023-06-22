@@ -17,7 +17,7 @@ public class Emergency {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name = "category_id")
     private Category category;
 

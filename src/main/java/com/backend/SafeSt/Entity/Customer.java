@@ -24,6 +24,7 @@ public class Customer implements UserDetails {
     private Integer id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
     private String phoneNumber;
@@ -32,7 +33,7 @@ public class Customer implements UserDetails {
     @OneToMany(mappedBy = "customer")
     private List<TrustedContact> trustedContacts;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
     @JoinColumn(name = "customer_location_id")
     private CustomerLocation customerLocation;
 
