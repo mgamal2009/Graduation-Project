@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,24 +42,24 @@ public class AuthenticationService {
     private final ResetTokenRepository resetTokenRepository;
 
     @Transactional
-    public CustomerModel register(CustomerReq req) throws Exception {
-        if (!(Validation.validateString(req.getFirstname(), req.getLastname(), req.getEmail(), req.getPhoneNumber(), req.getPassword()))) {
-            throw new Exception("Name, Email, Phone Number, and Password couldn't be empty");
+    public boolean register(CustomerReq req) throws Exception {
+        if (!(Validation.validateString(req.getFirstname(), req.getLastname(), req.getEmail(), req.getPhoneNumber(), req.getPassword(), req.getConfirmationPassword()))) {
+            throw new Exception("Fields couldn't be empty");
         }
         if (customerRepository.findByEmail(req.getEmail()).isPresent()) {
             throw new Exception("This Email is already used");
         }
-        if(!req.getPassword().equals(req.getConfirmationPassword())) {
+        if (!req.getPassword().equals(req.getConfirmationPassword())) {
             throw new Exception("Password and Confirmation Password Should be the Same!!");
         }
-            var customer = Customer.builder()
-                    .firstName(req.getFirstname())
-                    .lastName(req.getLastname())
-                    .email(req.getEmail())
-                    .password(passwordEncoder.encode(req.getPassword()))
-                    .phoneNumber(req.getPhoneNumber())
-                    .role(Role.Customer)
-                    .build();
+        var customer = Customer.builder()
+                .firstName(req.getFirstname())
+                .lastName(req.getLastname())
+                .email(req.getEmail())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .phoneNumber(req.getPhoneNumber())
+                .role(Role.Customer)
+                .build();
         var savedCustomer = customerRepository.save(customer);
         var location = CustomerLocation.builder()
                 .customer(savedCustomer)
@@ -68,22 +69,21 @@ public class AuthenticationService {
         savedCustomer = customerRepository.save(customer);
         /*var jwtToken = jwtService.generateToken(customer);
         saveCustomerToken(savedCustomer, jwtToken);*/
-        ConfirmationToken confirmationToken = new ConfirmationToken(customer);
+        ConfirmationToken confirmationToken = new ConfirmationToken(savedCustomer);
         confirmationTokenRepository.save(confirmationToken);
-        emailService.sendEmail(customer.getFirstName(), customer.getEmail(), confirmationToken.getConfirmationToken());
-        return customerMapper.convertEntityToModel(savedCustomer);
+        emailService.sendEmail(savedCustomer.getFirstName(), savedCustomer.getEmail(), confirmationToken.getConfirmationToken());
+        return true;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception {
-        authenticationManager.authenticate(
+        Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        var customer = customerRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new Exception("User not found"));
-        if(!customer.isEnabled()){
+        var customer = (Customer) auth.getPrincipal();
+        if (!customer.isEnabled()) {
             throw new Exception("Please Activate Your Account First");
         }
         var jwtToken = jwtService.generateToken(customer);
@@ -93,6 +93,7 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
     public MainResponse confirmMail(String confirmationToken) throws Exception {
         confirmationToken = confirmationToken.replace(" ", "+");
         String decryptedToken = RSAUtil.decrypt(confirmationToken);
@@ -111,6 +112,7 @@ public class AuthenticationService {
         customerRepository.save(customer);
         return new MainResponse(HttpStatus.OK, "Confirmed Successfully!");
     }
+
     public MainResponse resendConfirmationEmail(String oldToken) throws Exception {
         oldToken = oldToken.replace(" ", "+");
         String decryptedToken = RSAUtil.decrypt(oldToken);
