@@ -2,6 +2,8 @@ package com.backend.SafeSt.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.TimeZone;
@@ -23,7 +25,8 @@ public class ResetToken {
     private LocalDateTime createdDate;
     private boolean used;
 
-    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

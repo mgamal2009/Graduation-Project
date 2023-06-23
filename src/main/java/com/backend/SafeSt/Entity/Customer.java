@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,9 +35,11 @@ public class Customer implements UserDetails {
     @OneToMany(mappedBy = "customer")
     private List<TrustedContact> trustedContacts;
 
-    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
-    @JoinColumn(name = "customer_location_id")
+    @OneToOne(mappedBy = "customer")
     private CustomerLocation customerLocation;
+
+    @OneToOne(mappedBy = "customer")
+    private ConfirmationToken confirmationToken;
 
     @Enumerated(EnumType.STRING)
     private Role role;
