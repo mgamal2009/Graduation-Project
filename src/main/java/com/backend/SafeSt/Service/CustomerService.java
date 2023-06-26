@@ -64,14 +64,14 @@ public class CustomerService {
     @Transactional
     public boolean deleteTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
         Customer customer = checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findById(req.getTrustedId());
+        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
         if (trusted.isEmpty()) {
-            throw new Exception("Trusted Id not found");
+            throw new Exception("Trusted Email not found");
         }
         Customer foundTrusted = trusted.get();
         Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
         if (found.isEmpty()) {
-            throw new Exception("Id not in your Trusted Contacts");
+            throw new Exception("Email not in your Trusted Contacts");
         }
         trustedContactRepository.deleteTrustedContactByCustomer_IdAndTrusted_Id(customer.getId(), foundTrusted.getId());
         return true;
@@ -112,14 +112,14 @@ public class CustomerService {
     }
     public CustomerModel getTrustedInfo(TrustedContactReq req, Authentication auth) throws Exception {
         checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findById(req.getTrustedId());
+        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
         if (trusted.isEmpty()) {
-            throw new Exception("Trusted Id not found");
+            throw new Exception("Trusted Email not found");
         }
         Customer foundTrusted = trusted.get();
         Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
         if (found.isEmpty()) {
-            throw new Exception("Id not in your Trusted Contacts");
+            throw new Exception("Email not in your Trusted Contacts");
         }
         return CustomerModel.builder()
                 .firstname(foundTrusted.getFirstName())

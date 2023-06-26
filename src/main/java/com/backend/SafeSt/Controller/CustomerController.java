@@ -72,7 +72,7 @@ public class CustomerController {
     }
 
     //done
-    @GetMapping(value = "/checkTokenAvailability")
+    @PostMapping(value = "/checkTokenAvailability")
     public MainResponse checkTokenAvailability(@RequestBody CustomerReq req, Authentication auth) {
         try {
             CustomerService.checkLoggedIn(req.getId(),auth);

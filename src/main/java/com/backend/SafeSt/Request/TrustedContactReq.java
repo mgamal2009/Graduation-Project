@@ -13,5 +13,5 @@ public class TrustedContactReq {
     private Integer userId;
 
     private String email;
-    private Integer trustedId;
+//    private Integer trustedId;
 }
