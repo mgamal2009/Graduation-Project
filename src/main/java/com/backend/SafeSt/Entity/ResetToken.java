@@ -23,6 +23,7 @@ public class ResetToken {
     private String resetToken;
 
     private LocalDateTime createdDate;
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean used;
 
     @OneToOne

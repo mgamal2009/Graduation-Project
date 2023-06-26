@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,28 +28,12 @@ public class Customer implements UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean enabled = false;
-
-    @OneToMany(mappedBy = "customer")
-    private List<TrustedContact> trustedContacts;
-
-    @OneToOne(mappedBy = "customer")
-    private CustomerLocation customerLocation;
-
-    @OneToOne(mappedBy = "customer")
-    private ConfirmationToken confirmationToken;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Token> tokens;
-    @OneToMany(mappedBy = "customer")
-    private List<EmergencyInfo> emergencyInfos;
-    @OneToMany(mappedBy = "customer")
-    private List<Report> reports;
-    @OneToMany(mappedBy = "customer")
-    private List<Trip> trips;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

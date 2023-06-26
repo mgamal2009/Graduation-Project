@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LocationController {
     private final LocationService locationService;
-    @PostMapping(value = "/addLocation")
+    /*@PostMapping(value = "/addLocation")
     public MainResponse createLocation(@RequestBody LocationReq req) {
         try {
             return new MainResponse(HttpStatus.OK,
@@ -26,5 +26,5 @@ public class LocationController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }
+    }*/
 }

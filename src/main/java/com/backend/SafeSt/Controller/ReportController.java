@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-    @PostMapping("/addReport")
+   /* @PostMapping("/addReport")
     public MainResponse addReport(ReportReq req, Authentication auth){
         try {
             return new MainResponse(HttpStatus.OK,
@@ -26,8 +26,8 @@ public class ReportController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }
-    @GetMapping("/listLocationReports")
+    }*/
+    /*@GetMapping("/listLocationReports")
     public MainResponse listLocationReports(ReportReq req, Authentication auth){
         try {
             return new MainResponse(HttpStatus.OK,
@@ -36,8 +36,8 @@ public class ReportController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }
-    @GetMapping("/listCustomerReports")
+    }*/
+   /* @GetMapping("/listCustomerReports")
     public MainResponse listCustomerReports(ReportReq req, Authentication auth){
         try {
             return new MainResponse(HttpStatus.OK,
@@ -46,6 +46,6 @@ public class ReportController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }
+    }*/
 
 }

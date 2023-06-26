@@ -9,7 +9,6 @@ public class TripModel {
     private Integer id;
     private String estimatedTime;
     private String totalTime;
-
     private boolean ended;
     private double sourceLongitude;
     private double sourceLatitude;

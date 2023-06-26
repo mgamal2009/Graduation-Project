@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TripController {
     private final TripService tripService;
+    //done
     @PostMapping(value = "/addTrip")
     public MainResponse createTrip(@RequestBody TripReq req, Authentication auth) {
         try {
@@ -25,6 +26,7 @@ public class TripController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+    //done
     @PutMapping(value = "/endTrip")
     public MainResponse endTrip(@RequestBody TripReq req, Authentication auth) {
         try {
@@ -35,6 +37,7 @@ public class TripController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+    //done
     @DeleteMapping(value = "/cancelTrip")
     public MainResponse cancelTrip(@RequestBody TripReq req, Authentication auth) {
         try {
@@ -45,12 +48,24 @@ public class TripController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-    @GetMapping(value = "/checkTrip")
-    public MainResponse checkTrip(@RequestBody TripReq req, Authentication auth) {
+    //done
+    @GetMapping(value = "/checkIngoingTrip")
+    public MainResponse checkIngoingTrip(@RequestBody TripReq req, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.EXECUTED,
-                    tripService.checkTrip(req,auth));
+                    tripService.checkIngoingTrip(req,auth));
+        } catch (Exception exception) {
+            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
+    //done
+    @PutMapping(value = "/extendTrip")
+    public MainResponse extendTrip(@RequestBody TripReq req, Authentication auth) {
+        try {
+            return new MainResponse(HttpStatus.OK,
+                    ResponseMessage.EXECUTED,
+                    tripService.extendTrip(req,auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }

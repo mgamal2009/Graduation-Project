@@ -15,16 +15,12 @@ public class CustomerMapper {
     private final CustomerLocationMapper customerLocationMapper;
 
     public CustomerModel convertEntityToModel(Customer customer) {
-        var customerModel = CustomerModel.builder()
+        return CustomerModel.builder()
                 .id(customer.getId())
                 .firstname(customer.getFirstName())
                 .lastname(customer.getLastName())
                 .email(customer.getEmail())
                 .phoneNumber(customer.getPhoneNumber())
                 .build();
-        if (customer.getCustomerLocation() != null) {
-            customerModel.setCustomerLocation(customerLocationMapper.convertEntityToModel(customer.getCustomerLocation()));
-        }
-        return customerModel;
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EmergencyController {
     private final EmergencyService emergencyService;
-    @PostMapping(value = "/addEmergency")
+    /*@PostMapping(value = "/addEmergency")
     public MainResponse createEmergency(@RequestBody EmergencyReq req) {
         try {
             return new MainResponse(HttpStatus.OK,
@@ -26,5 +26,5 @@ public class EmergencyController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }
+    }*/
 }

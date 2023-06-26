@@ -22,7 +22,9 @@ public class Token {
     private String token;
     @Enumerated(EnumType.STRING)
     private TokenType tokenType;
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean expired;
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean revoked;
 
     @ManyToOne

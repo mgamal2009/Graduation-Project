@@ -26,23 +26,20 @@ public class CustomerLocationService {
     @Transactional
     public CustomerLocationModel updateCustomerLocation(CustomerLocationReq req, Authentication auth) throws Exception {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        if (!(Validation.validateDouble(req.getLatitude(), req.getLongitude()))) {
-            throw new Exception("Longitude and Latitude Should be Double");
-        }
-        if (!(Validation.validateInt(req.getCustomerId()))) {
-            throw new Exception("Customer Id Should be Integer");
-        }
         CustomerLocation location;
         Optional<CustomerLocation> l = customerLocationRepository.findByCustomer_Id(req.getCustomerId());
+        double long3 = (Math.floor(req.getLongitude() * 1000) / 1000.0);
+        double lat3 = (Math.floor(req.getLatitude() * 1000) / 1000.0);
         if (l.isPresent()) {
+
             location = l.get();
-            location.setLongitude(req.getLongitude());
-            location.setLatitude(req.getLatitude());
+            location.setLongitude(long3);
+            location.setLatitude(lat3);
         } else {
             location = CustomerLocation.builder()
                     .customer(c)
-                    .longitude(req.getLongitude())
-                    .latitude(req.getLatitude())
+                    .longitude(long3)
+                    .latitude(lat3)
                     .build();
         }
         customerLocationRepository.save(location);

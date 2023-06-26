@@ -20,7 +20,7 @@ public class Trip {
 
     private Timestamp estimatedTime;
     private Timestamp totalTime;
-
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean ended;
 
     private double sourceLongitude;

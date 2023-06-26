@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,7 +29,6 @@ public class CustomerService {
     private final TrustedContactRepository trustedContactRepository;
     private final CustomerMapper customerMapper;
     private final TrustedContactMapper trustedContactMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public TrustedContactModel addTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
@@ -64,11 +64,15 @@ public class CustomerService {
     @Transactional
     public boolean deleteTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
         Customer customer = checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+        Optional<Customer> trusted = customerRepository.findById(req.getTrustedId());
         if (trusted.isEmpty()) {
-            throw new Exception("Email not found");
+            throw new Exception("Trusted Id not found");
         }
         Customer foundTrusted = trusted.get();
+        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
+        if (found.isEmpty()) {
+            throw new Exception("Id not in your Trusted Contacts");
+        }
         trustedContactRepository.deleteTrustedContactByCustomer_IdAndTrusted_Id(customer.getId(), foundTrusted.getId());
         return true;
     }
@@ -79,7 +83,7 @@ public class CustomerService {
         }if (!req.getLastname().isBlank()){
             customer.setLastName(req.getLastname());
         }
-        if (req.getPassword() != null && req.getConfirmationPassword() != null && req.getOldPassword() != null ){
+        /*if (req.getPassword() != null && req.getConfirmationPassword() != null && req.getOldPassword() != null ){
             if (!req.getPassword().isBlank()){
                 if (!req.getConfirmationPassword().isBlank()&& !req.getOldPassword().isBlank()){
                     if (req.getPassword().equals(req.getConfirmationPassword())){
@@ -94,7 +98,7 @@ public class CustomerService {
         }
         if (req.getPassword() != null || req.getConfirmationPassword() != null || req.getOldPassword() != null ) {
             throw new Exception("Passwords can't be empty");
-        }
+        }*/
         if (!req.getPhoneNumber().isBlank()){
             customer.setPhoneNumber(req.getPhoneNumber());
         }
@@ -108,18 +112,39 @@ public class CustomerService {
     }
     public CustomerModel getTrustedInfo(TrustedContactReq req, Authentication auth) throws Exception {
         checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+        Optional<Customer> trusted = customerRepository.findById(req.getTrustedId());
         if (trusted.isEmpty()) {
-            throw new Exception("Email not found");
+            throw new Exception("Trusted Id not found");
         }
         Customer foundTrusted = trusted.get();
         Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
         if (found.isEmpty()) {
-            throw new Exception("Email not in Trusted Contacts");
+            throw new Exception("Id not in your Trusted Contacts");
         }
         return CustomerModel.builder()
+                .firstname(foundTrusted.getFirstName())
+                .lastname(foundTrusted.getLastName())
+                .id(foundTrusted.getId())
                 .email(foundTrusted.getEmail())
                 .phoneNumber(foundTrusted.getPhoneNumber())
                 .build();
+    }
+    public int getNumOfTrusted(CustomerReq req, Authentication auth) throws Exception {
+        Customer c = checkLoggedIn(req.getId(), auth);
+        ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
+        return list.size();
+    }
+
+    public ArrayList<TrustedContactModel> getAllTrustedContacts(CustomerReq req, Authentication auth) throws Exception {
+        Customer c = checkLoggedIn(req.getId(), auth);
+        ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
+        if (list.isEmpty()){
+            throw new Exception("User Don't have Trusted Contacts");
+        }
+        ArrayList<TrustedContactModel> listModel = new ArrayList<>();
+        for (TrustedContact t : list){
+            listModel.add(trustedContactMapper.convertEntityToModel(t));
+        }
+        return listModel;
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -27,14 +28,15 @@ public class TripService {
     @Transactional
     public TripModel createTrip(TripReq req, Authentication auth) throws Exception {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        if (!(Validation.validateDouble(req.getSourceLongitude(), req.getSourceLatitude(), req.getDestinationLongitude(), req.getDestinationLatitude()))) {
-            throw new Exception("Source and Destination couldn't be empty");
-        }
+        double sourceLong3 = (Math.floor(req.getSourceLongitude() * 1000) / 1000.0);
+        double sourceLat3 = (Math.floor(req.getSourceLatitude() * 1000) / 1000.0);
+        double destinationLong3 = (Math.floor(req.getDestinationLongitude() * 1000) / 1000.0);
+        double destinationLat3 = (Math.floor(req.getDestinationLatitude() * 1000) / 1000.0);
         var trip = Trip.builder()
-                .sourceLongitude(req.getSourceLongitude())
-                .sourceLatitude(req.getSourceLatitude())
-                .destinationLongitude(req.getDestinationLongitude())
-                .destinationLatitude(req.getDestinationLatitude())
+                .sourceLongitude(sourceLong3)
+                .sourceLatitude(sourceLat3)
+                .destinationLongitude(destinationLong3)
+                .destinationLatitude(destinationLat3)
                 .estimatedTime(req.getEstimatedTime())
                 .ended(false)
                 .build();
@@ -59,14 +61,27 @@ public class TripService {
         CustomerService.checkLoggedIn(req.getCustomerId(), auth);
         var trip = tripRepository.findById(req.getId())
                 .orElseThrow(()-> new Exception("Trip not Found"));
+        if (trip.isEnded()){
+            throw new Exception("Trip already ended");
+        }
         tripRepository.delete(trip);
         return true;
     }
 
-    public boolean checkTrip(TripReq req, Authentication auth) throws Exception {
+    public TripModel checkIngoingTrip(TripReq req, Authentication auth) throws Exception {
         CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        var trip = tripRepository.findById(req.getId())
+        ArrayList<Trip> list = tripRepository.findAllByCustomer_IdAndAndEnded(req.getCustomerId(), false);
+        if (list.isEmpty()){
+            return null;
+        }
+        return tripMapper.convertEntityToModel(list.get(0));
+    }
+    public TripModel extendTrip(TripReq req, Authentication auth) throws Exception {
+        CustomerService.checkLoggedIn(req.getCustomerId(), auth);
+        var trip = tripRepository.findByCustomer_IdAndId(req.getCustomerId(), req.getId())
                 .orElseThrow(()-> new Exception("Trip not Found"));
-        return !trip.getTotalTime().toLocalDateTime().isBefore(LocalDateTime.now());
+        trip.setTotalTime(Timestamp.valueOf(trip.getTotalTime().toLocalDateTime().plusMinutes(req.getAddMin())));
+        tripRepository.save(trip);
+        return tripMapper.convertEntityToModel(trip);
     }
 }

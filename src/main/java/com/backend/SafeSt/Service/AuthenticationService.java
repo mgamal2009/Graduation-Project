@@ -5,7 +5,6 @@ import com.backend.SafeSt.Entity.*;
 import com.backend.SafeSt.Enum.Role;
 import com.backend.SafeSt.Enum.TokenType;
 import com.backend.SafeSt.Mapper.CustomerMapper;
-import com.backend.SafeSt.Model.CustomerModel;
 import com.backend.SafeSt.Repository.*;
 import com.backend.SafeSt.Request.AuthenticationRequest;
 import com.backend.SafeSt.Request.CustomerReq;
@@ -38,8 +37,6 @@ public class AuthenticationService {
     private final CustomerLocationRepository customerLocationRepository;
     private final EmailService emailService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
-    private final CustomerMapper customerMapper;
-    private final ResetTokenRepository resetTokenRepository;
 
     @Transactional
     public boolean register(CustomerReq req) throws Exception {
@@ -64,9 +61,7 @@ public class AuthenticationService {
         var location = CustomerLocation.builder()
                 .customer(savedCustomer)
                 .build();
-        var savedLocation = customerLocationRepository.save(location);
-        savedCustomer.setCustomerLocation(savedLocation);
-        savedCustomer = customerRepository.save(customer);
+        customerLocationRepository.save(location);
         /*var jwtToken = jwtService.generateToken(customer);
         saveCustomerToken(savedCustomer, jwtToken);*/
         ConfirmationToken confirmationToken = new ConfirmationToken(savedCustomer);
@@ -83,14 +78,12 @@ public class AuthenticationService {
                 )
         );
         var customer = (Customer) auth.getPrincipal();
-        if (!customer.isEnabled()) {
-            throw new Exception("Please Activate Your Account First");
-        }
         var jwtToken = jwtService.generateToken(customer);
         deleteCustomerTokens(customer);
         saveCustomerToken(customer, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .id(customer.getId())
                 .build();
     }
 
@@ -106,29 +99,23 @@ public class AuthenticationService {
             return new MainResponse(HttpStatus.OK, "Already Confirmed!");
         TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
         if (token.getCreatedDate().plusHours(1).isBefore(LocalDateTime.now())) {
-            throw new Exception("Link is Expired!");
+            resendConfirmationEmail(token);
+            throw new Exception("Link is Expired! New Link Was Sent to Your Email.");
         }
         customer.setEnabled(true);
         customerRepository.save(customer);
         return new MainResponse(HttpStatus.OK, "Confirmed Successfully!");
     }
 
-    public MainResponse resendConfirmationEmail(String oldToken) throws Exception {
-        oldToken = oldToken.replace(" ", "+");
-        String decryptedToken = RSAUtil.decrypt(oldToken);
-        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(decryptedToken);
-        if (token == null) {
-            throw new Exception("Invalid Link!");
-        }
+    public void resendConfirmationEmail(ConfirmationToken token) throws Exception {
         Customer customer = token.getCustomer();
         confirmationTokenRepository.delete(token);
         ConfirmationToken newConfirmationToken = new ConfirmationToken(customer);
         confirmationTokenRepository.save(newConfirmationToken);
         emailService.sendEmail(customer.getFirstName(), customer.getEmail(), newConfirmationToken.getConfirmationToken());
-        return new MainResponse(HttpStatus.OK, "A New Confirmation Link has been sent to You!");
     }
 
-    public MainResponse sendResetPasswordMail(String email) {
+    /*public MainResponse sendResetPasswordMail(String email) {
         try {
             var customer = customerRepository.findByEmail(email)
                     .orElseThrow(() -> new Exception("User not found"));
@@ -160,7 +147,7 @@ public class AuthenticationService {
         resetTokenRepository.save(resetToken);
         return "Password Reset Successfully";
     }
-
+*/
     private void deleteCustomerTokens(Customer customer) {
         var validCustomerTokens = tokenRepository.findAllTokensByCustomer(customer);
         if (validCustomerTokens.isEmpty())

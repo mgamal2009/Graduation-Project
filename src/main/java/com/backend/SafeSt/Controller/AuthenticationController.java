@@ -5,10 +5,12 @@ import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Request.ResetPasswordReq;
 import com.backend.SafeSt.Response.MainResponse;
 import com.backend.SafeSt.Service.AuthenticationService;
+import com.backend.SafeSt.Service.CustomerService;
 import com.backend.SafeSt.Util.ResponseMessage;
 import com.sun.mail.smtp.SMTPSendFailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
@@ -23,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
+    //done
     @PostMapping("/register")
     public MainResponse register(@RequestBody CustomerReq request) {
         try {
@@ -34,7 +36,7 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-
+    //done
     @PostMapping("/authenticate")
     public MainResponse authenticate(@RequestBody AuthenticationRequest request) {
         try {
@@ -45,7 +47,7 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-
+    //done
     @GetMapping(value = "/confirm-account")
     public MainResponse confirmMail(@RequestParam String urlToken) {
         try {
@@ -55,16 +57,17 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping(value = "/resend-confirmation-email")
+
+    /*@GetMapping(value = "/resend-confirmation-email")
     public MainResponse resendConfirmationEmail(@RequestParam String urlToken) {
         try {
             return authenticationService.resendConfirmationEmail(urlToken);
         } catch (Exception e) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         }
-    }
+    }*/
 
-    @GetMapping(value = "/reset-password")
+    /*@GetMapping(value = "/reset-password")
     public MainResponse sendResetMail(@RequestParam String email) {
         try {
             return authenticationService.sendResetPasswordMail(email);
@@ -82,5 +85,5 @@ public class AuthenticationController {
         } catch (Exception e) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
+    }*/
 }
