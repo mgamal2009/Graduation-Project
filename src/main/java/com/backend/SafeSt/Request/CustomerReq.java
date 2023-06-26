@@ -18,9 +18,7 @@ public class CustomerReq {
     private String lastname;
     private String email;
     private String password;
-    private String oldPassword;
+//    private String oldPassword;
     private String confirmationPassword;
     private String phoneNumber;
-    private List<String> trustedContacts;
-    private CustomerLocationModel customerLocation;
 }

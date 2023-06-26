@@ -8,7 +8,6 @@ import com.backend.SafeSt.Mapper.CustomerMapper;
 import com.backend.SafeSt.Repository.*;
 import com.backend.SafeSt.Request.AuthenticationRequest;
 import com.backend.SafeSt.Request.CustomerReq;
-import com.backend.SafeSt.Request.ResetPasswordReq;
 import com.backend.SafeSt.Response.AuthenticationResponse;
 import com.backend.SafeSt.Response.MainResponse;
 import com.backend.SafeSt.Util.RSAUtil;
@@ -164,5 +163,15 @@ public class AuthenticationService {
                 .revoked(false)
                 .build();
         tokenRepository.save(token);
+    }
+
+    public boolean logout(CustomerReq request,Authentication auth) throws Exception {
+        CustomerService.checkLoggedIn(request.getId(), auth);
+        var token = tokenRepository.findByCustomer_Id(request.getId())
+                .orElseThrow(()->new Exception("Token not Found"));
+        token.setExpired(true);
+        token.setRevoked(true);
+        tokenRepository.save(token);
+        return true;
     }
 }

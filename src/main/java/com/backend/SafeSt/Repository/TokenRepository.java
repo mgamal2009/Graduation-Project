@@ -11,10 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token,Integer> {
-    /*@Query("""
-            select t from Token t inner join Customer u on t.customer.id = u.id
-            where u.id = :customerId and (t.expired = false or t.revoked = false)
-            """)*/
+
     List<Token> findAllTokensByCustomer(Customer customer);
+    Optional<Token> findByCustomer_Id(Integer id);
     Optional<Token> findByToken(String token);
 }

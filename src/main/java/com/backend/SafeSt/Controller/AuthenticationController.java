@@ -2,22 +2,13 @@ package com.backend.SafeSt.Controller;
 
 import com.backend.SafeSt.Request.AuthenticationRequest;
 import com.backend.SafeSt.Request.CustomerReq;
-import com.backend.SafeSt.Request.ResetPasswordReq;
 import com.backend.SafeSt.Response.MainResponse;
 import com.backend.SafeSt.Service.AuthenticationService;
-import com.backend.SafeSt.Service.CustomerService;
 import com.backend.SafeSt.Util.ResponseMessage;
-import com.sun.mail.smtp.SMTPSendFailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/auth")
@@ -56,7 +47,17 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-
+    //done
+    @PostMapping("/logout")
+    public MainResponse logout(@RequestBody CustomerReq request, Authentication auth) {
+        try {
+            return new MainResponse(HttpStatus.OK,
+                    ResponseMessage.EXECUTED,
+                    authenticationService.logout(request,auth));
+        } catch (Exception exception) {
+            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
 
     /*@GetMapping(value = "/resend-confirmation-email")
     public MainResponse resendConfirmationEmail(@RequestParam String urlToken) {
