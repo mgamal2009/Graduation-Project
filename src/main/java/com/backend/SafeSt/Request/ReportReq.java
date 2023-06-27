@@ -17,8 +17,8 @@ public class ReportReq {
 //    private float score;
 //    @JsonDeserialize(using = TimestampDeserializer.class )
 //    private Timestamp date;
-    private double longitude;
-    private double latitude;
+    private String longitude;
+    private String latitude;
 //    private Integer locationId;
     private Integer customerId;
 }

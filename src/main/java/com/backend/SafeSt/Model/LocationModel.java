@@ -7,8 +7,8 @@ import lombok.Data;
 @Builder
 public class LocationModel {
     private Integer id;
-    private double longitude;
-    private double latitude;
+    private String longitude;
+    private String latitude;
 //    private String color;
     private double averageScore;
 }

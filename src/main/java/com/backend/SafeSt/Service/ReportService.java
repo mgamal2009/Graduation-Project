@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,8 +36,12 @@ public class ReportService {
     @Transactional
     public ReportModel addReport(ReportReq req, Authentication auth) throws Exception {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        double long3 = (Math.floor(req.getLongitude() * 1000) / 1000.0);
-        double lat3 = (Math.floor(req.getLatitude() * 1000) / 1000.0);
+        String long3 = BigDecimal.valueOf(Double.parseDouble(req.getLongitude()))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
+        String lat3 = BigDecimal.valueOf(Double.parseDouble(req.getLatitude()))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
         Optional<Location> l = locationRepository.findByLongitudeAndLatitude(long3, lat3);
         Location location = l.orElseGet(() -> Location.builder()
                 .latitude(lat3)
@@ -66,7 +72,7 @@ public class ReportService {
         return reportMapper.convertEntityToModel(report);
     }
 
-    public List<ReportModel> listLocationReports(int id,double longitude, double latitude, Authentication auth) throws Exception {
+    public List<ReportModel> listLocationReports(int id,String longitude, String latitude, Authentication auth) throws Exception {
         CustomerService.checkLoggedIn(id, auth);
         var l = locationRepository.findByLongitudeAndLatitude(longitude, latitude)
                 .orElseThrow(() -> new Exception("No Reports Found"));

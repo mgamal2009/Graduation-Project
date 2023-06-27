@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
     private final ReportService reportService;
     @PostMapping("/addReport")
-    public MainResponse addReport(ReportReq req, Authentication auth){
+    public MainResponse addReport(@RequestBody ReportReq req, Authentication auth){
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.CREATED,
@@ -25,7 +25,7 @@ public class ReportController {
         }
     }
     @GetMapping("/listLocationReports")
-    public MainResponse listLocationReports(@RequestParam Integer id, @RequestParam double longitude,@RequestParam double latitude, Authentication auth){
+    public MainResponse listLocationReports(@RequestParam Integer id, @RequestParam String longitude,@RequestParam String latitude, Authentication auth){
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.EXECUTED,

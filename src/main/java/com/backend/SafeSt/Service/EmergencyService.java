@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,8 +41,12 @@ public class EmergencyService {
                 .category(EmergencyCat.valueOf(req.getCategory()))
                 .customer(c)
                 .build();
-        double long3 = (Math.floor(req.getLongitude() * 1000) / 1000.0);
-        double lat3 = (Math.floor(req.getLatitude() * 1000) / 1000.0);
+        String long3 = BigDecimal.valueOf(Double.parseDouble(req.getLongitude()))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
+        String lat3 = BigDecimal.valueOf(Double.parseDouble(req.getLatitude()))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
         Optional<Location> l = locationRepository.findByLongitudeAndLatitude(long3,lat3);
         Location location = l.orElseGet(() -> Location.builder()
                 .latitude(lat3)

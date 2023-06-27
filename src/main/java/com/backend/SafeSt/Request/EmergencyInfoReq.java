@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class EmergencyInfoReq {
 //    private Integer id;
-    private double longitude;
-    private double latitude;
+    private String longitude;
+    private String latitude;
     private Timestamp date;
 //    private Integer emergencyId;
     private Integer customerId;
