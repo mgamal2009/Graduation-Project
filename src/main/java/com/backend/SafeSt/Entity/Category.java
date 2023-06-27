@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Entity;
 
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
+    @Column(unique = true)
     private String name;
 
     @OneToOne(mappedBy = "category")
@@ -24,3 +25,4 @@ public class Category {
     private List<EmergencyInfo> emergencyInfos;
 
 }
+*/

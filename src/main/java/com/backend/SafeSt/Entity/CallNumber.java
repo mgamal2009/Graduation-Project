@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Entity;
 
 
@@ -16,4 +17,4 @@ public class CallNumber extends EmergencyStep {
         super(emergency);
         this.phoneNumber = phoneNumber;
     }
-}
+}*/

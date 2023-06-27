@@ -13,7 +13,6 @@ import com.backend.SafeSt.Request.TrustedContactReq;
 import com.backend.SafeSt.Util.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,14 +61,14 @@ public class CustomerService {
     }
 
     @Transactional
-    public boolean deleteTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
-        Customer customer = checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+    public boolean deleteTrustedContact(int id, String email, Authentication auth) throws Exception {
+        Customer customer = checkLoggedIn(id, auth);
+        Optional<Customer> trusted = customerRepository.findByEmail(email);
         if (trusted.isEmpty()) {
             throw new Exception("Trusted Email not found");
         }
         Customer foundTrusted = trusted.get();
-        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
+        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(id, foundTrusted.getId());
         if (found.isEmpty()) {
             throw new Exception("Email not in your Trusted Contacts");
         }
@@ -106,18 +105,18 @@ public class CustomerService {
         return customerMapper.convertEntityToModel(customer);
     }
 
-    public CustomerModel getPersonalInfo(CustomerReq req, Authentication auth) throws Exception {
-        Customer customer =  checkLoggedIn(req.getId(), auth);
+    public CustomerModel getPersonalInfo(int id, Authentication auth) throws Exception {
+        Customer customer =  checkLoggedIn(id, auth);
         return customerMapper.convertEntityToModel(customer);
     }
-    public CustomerModel getTrustedInfo(TrustedContactReq req, Authentication auth) throws Exception {
-        checkLoggedIn(req.getUserId(), auth);
-        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+    /*public CustomerModel getTrustedInfo(int id,String email, Authentication auth) throws Exception {
+        checkLoggedIn(id, auth);
+        Optional<Customer> trusted = customerRepository.findByEmail(email);
         if (trusted.isEmpty()) {
             throw new Exception("Trusted Email not found");
         }
         Customer foundTrusted = trusted.get();
-        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(req.getUserId(), foundTrusted.getId());
+        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(id, foundTrusted.getId());
         if (found.isEmpty()) {
             throw new Exception("Email not in your Trusted Contacts");
         }
@@ -128,15 +127,15 @@ public class CustomerService {
                 .email(foundTrusted.getEmail())
                 .phoneNumber(foundTrusted.getPhoneNumber())
                 .build();
-    }
-    public int getNumOfTrusted(CustomerReq req, Authentication auth) throws Exception {
-        Customer c = checkLoggedIn(req.getId(), auth);
+    }*/
+    public int getNumOfTrusted(int id, Authentication auth) throws Exception {
+        Customer c = checkLoggedIn(id, auth);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
         return list.size();
     }
 
-    public ArrayList<TrustedContactModel> getAllTrustedContacts(CustomerReq req, Authentication auth) throws Exception {
-        Customer c = checkLoggedIn(req.getId(), auth);
+    public ArrayList<TrustedContactModel> getAllTrustedContacts(int id, Authentication auth) throws Exception {
+        Customer c = checkLoggedIn(id, auth);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
         if (list.isEmpty()){
             throw new Exception("User Don't have Trusted Contacts");

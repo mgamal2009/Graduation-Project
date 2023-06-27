@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Util;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -17,4 +18,4 @@ public class TimestampDeserializer extends StdDeserializer<Timestamp> {
     public Timestamp deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         return Timestamp.valueOf(parser.readValueAs(String.class));
     }
-}
+}*/

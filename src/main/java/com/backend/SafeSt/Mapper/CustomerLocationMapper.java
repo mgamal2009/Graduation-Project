@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Mapper;
 
 import com.backend.SafeSt.Entity.CustomerLocation;
@@ -17,3 +18,4 @@ public class CustomerLocationMapper {
                 .build();
     }
 }
+*/

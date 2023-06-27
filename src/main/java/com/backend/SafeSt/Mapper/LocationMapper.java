@@ -13,7 +13,6 @@ public class LocationMapper {
                 .id(location.getId())
                 .longitude(location.getLongitude())
                 .latitude(location.getLatitude())
-                .color(location.getColor())
                 .averageScore(location.getAverageScore())
                 .build();
     }

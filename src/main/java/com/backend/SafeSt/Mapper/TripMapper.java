@@ -11,8 +11,10 @@ public class TripMapper {
     public TripModel convertEntityToModel(Trip trip) {
         return TripModel.builder()
                 .id(trip.getId())
-                .estimatedTime(trip.getEstimatedTime().toString())
-                .totalTime(trip.getTotalTime().toString())
+                .startedAt(trip.getStartedAt().toString())
+                .estimatedEnd(trip.getEstimatedEnd().toString())
+                .estimatedTime(trip.getEstimatedTime())
+                .remainingTime(trip.getRemainingTime())
                 .ended(trip.isEnded())
                 .sourceLongitude(trip.getSourceLongitude())
                 .sourceLatitude(trip.getSourceLatitude())

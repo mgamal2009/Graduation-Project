@@ -1,5 +1,7 @@
+/*
 package com.backend.SafeSt.Entity;
 
+import com.backend.SafeSt.Enum.EmergencyCat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -19,19 +21,8 @@ public class Emergency {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @OneToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @OneToMany(mappedBy = "emergency")
-    private List<EmergencyInfo> emergencyInfos;
-    @OneToMany(mappedBy = "emergency")
-    private List<EmergencyStep> emergencySteps;
-
-
-    public Emergency(Category category) {
-        this.category = category;
-    }
+    @Enumerated(EnumType.STRING)
+    private EmergencyCat category;
 
 }
+*/

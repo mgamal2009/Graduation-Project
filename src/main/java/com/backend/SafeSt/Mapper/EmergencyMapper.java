@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Mapper;
 
 import com.backend.SafeSt.Entity.Emergency;
@@ -15,3 +16,4 @@ public class EmergencyMapper {
                 .build();
     }
 }
+*/

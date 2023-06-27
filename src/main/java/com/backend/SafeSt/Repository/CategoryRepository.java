@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Repository;
 
 import com.backend.SafeSt.Entity.Category;
@@ -8,3 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
 }
+*/

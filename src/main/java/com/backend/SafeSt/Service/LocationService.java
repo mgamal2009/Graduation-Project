@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Service;
 
 import com.backend.SafeSt.Entity.Location;
@@ -8,7 +9,6 @@ import com.backend.SafeSt.Request.LocationReq;
 import com.backend.SafeSt.Util.Validation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,3 +31,4 @@ public class LocationService {
         return locationMapper.convertEntityToModel(location);
     }
 }
+*/

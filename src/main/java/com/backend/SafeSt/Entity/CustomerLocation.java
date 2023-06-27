@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Entity;
 
 import jakarta.persistence.*;
@@ -27,3 +28,4 @@ public class CustomerLocation {
     private Customer customer;
 
 }
+*/

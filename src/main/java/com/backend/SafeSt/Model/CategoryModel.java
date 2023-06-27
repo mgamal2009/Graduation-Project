@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Model;
 
 import lombok.Builder;
@@ -9,3 +10,4 @@ public class CategoryModel {
     private Integer id;
     private String name;
 }
+*/

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    //done
     @PostMapping("/register")
     public MainResponse register(@RequestBody CustomerReq request) {
         try {
@@ -27,7 +26,6 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-    //done
     @PostMapping("/authenticate")
     public MainResponse authenticate(@RequestBody AuthenticationRequest request) {
         try {
@@ -38,7 +36,6 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-    //done
     @GetMapping(value = "/confirm-account")
     public MainResponse confirmMail(@RequestParam String urlToken) {
         try {
@@ -47,7 +44,6 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-    //done
     @PostMapping("/logout")
     public MainResponse logout(@RequestBody CustomerReq request, Authentication auth) {
         try {

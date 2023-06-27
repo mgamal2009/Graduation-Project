@@ -7,6 +7,5 @@ import lombok.Data;
 @Builder
 public class TrustedContactModel {
     private String email;
-    private String firstName;
-    private String lastName;
+    private String name;
 }

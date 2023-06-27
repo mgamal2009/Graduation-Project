@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 import java.util.UUID;

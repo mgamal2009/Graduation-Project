@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Repository;
 
 import com.backend.SafeSt.Entity.ResetToken;
@@ -11,3 +12,4 @@ public interface ResetTokenRepository extends JpaRepository<ResetToken,Long> {
 
     Optional< ResetToken> findByResetToken(String token);
 }
+*/

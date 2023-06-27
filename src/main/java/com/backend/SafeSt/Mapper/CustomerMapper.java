@@ -3,16 +3,13 @@ package com.backend.SafeSt.Mapper;
 import com.backend.SafeSt.Entity.Customer;
 import com.backend.SafeSt.Model.CustomerModel;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Data
 public class CustomerMapper {
-    private final CustomerLocationMapper customerLocationMapper;
+//    private final CustomerLocationMapper customerLocationMapper;
 
     public CustomerModel convertEntityToModel(Customer customer) {
         return CustomerModel.builder()

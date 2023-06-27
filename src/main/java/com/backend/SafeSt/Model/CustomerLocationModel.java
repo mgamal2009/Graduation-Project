@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Model;
 
 import lombok.Builder;
@@ -11,3 +12,4 @@ public class CustomerLocationModel {
     private double latitude;
     private Integer customerId;
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Model;
 
 import lombok.Builder;
@@ -9,3 +10,4 @@ public class EmergencyModel {
     private Integer id;
     private Integer categoryId;
 }
+*/

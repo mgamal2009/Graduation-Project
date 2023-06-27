@@ -17,15 +17,19 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
-    private Timestamp estimatedTime;
-    private Timestamp totalTime;
+    private Timestamp startedAt;
+    private Timestamp estimatedEnd;
+    private int estimatedTime;
+    private long remainingTime;
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean ended;
-
+    @Column(precision = 3)
     private double sourceLongitude;
+    @Column(precision = 3)
     private double sourceLatitude;
+    @Column(precision = 3)
     private double destinationLongitude;
+    @Column(precision = 3)
     private double destinationLatitude;
 
     @ManyToOne

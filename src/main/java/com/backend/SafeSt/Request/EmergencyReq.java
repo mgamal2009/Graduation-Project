@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Request;
 
 import lombok.AllArgsConstructor;
@@ -14,3 +15,4 @@ public class EmergencyReq {
 
     private Integer categoryId;
 }
+*/

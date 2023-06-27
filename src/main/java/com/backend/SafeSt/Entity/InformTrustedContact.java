@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Entity;
 
 
@@ -12,4 +13,4 @@ public class InformTrustedContact extends EmergencyStep {
     public InformTrustedContact(Emergency emergency) {
         super(emergency);
     }
-}
+}*/

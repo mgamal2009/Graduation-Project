@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Request;
 
 import lombok.Data;
@@ -10,3 +11,4 @@ public class ResetPasswordReq {
     String newPassword;
 
 }
+*/

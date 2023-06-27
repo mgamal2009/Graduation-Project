@@ -1,13 +1,8 @@
+/*
 package com.backend.SafeSt.Service;
 
 import com.backend.SafeSt.Entity.Customer;
-import com.backend.SafeSt.Entity.CustomerLocation;
-import com.backend.SafeSt.Mapper.CustomerLocationMapper;
-import com.backend.SafeSt.Model.CustomerLocationModel;
-import com.backend.SafeSt.Repository.CustomerLocationRepository;
-import com.backend.SafeSt.Repository.CustomerRepository;
-import com.backend.SafeSt.Request.CustomerLocationReq;
-import com.backend.SafeSt.Util.Validation;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,3 +41,4 @@ public class CustomerLocationService {
         return customerLocationMapper.convertEntityToModel(location);
     }
 }
+*/

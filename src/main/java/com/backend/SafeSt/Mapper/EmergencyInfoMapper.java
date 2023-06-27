@@ -11,11 +11,10 @@ public class EmergencyInfoMapper {
     public EmergencyInfoModel convertEntityToModel(EmergencyInfo emergencyInfo) {
         return EmergencyInfoModel.builder()
                 .id(emergencyInfo.getId())
-                .date(emergencyInfo.getDate())
-                .emergencyId(emergencyInfo.getEmergency().getId())
+                .date(emergencyInfo.getDate().toString())
+                .category(emergencyInfo.getCategory().toString())
                 .customerId(emergencyInfo.getCustomer().getId())
                 .reportId(emergencyInfo.getReport().getId())
-                .categoryId(emergencyInfo.getCategory().getId())
                 .locationId(emergencyInfo.getLocation().getId())
                 .build();
 

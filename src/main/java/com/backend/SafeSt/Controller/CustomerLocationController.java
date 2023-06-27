@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Controller;
 
 import com.backend.SafeSt.Entity.Customer;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerLocationController {
     private final CustomerLocationService customerLocationService;
-    //done
+    
     @PostMapping(value = "/updateCustomerLocation")
     public MainResponse updateCustomerLocation(@RequestBody CustomerLocationReq req,Authentication auth) {
     try {
@@ -33,3 +34,4 @@ public class CustomerLocationController {
         }
     }
 }
+*/

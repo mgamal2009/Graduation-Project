@@ -1,12 +1,12 @@
 package com.backend.SafeSt.Entity;
 
+import com.backend.SafeSt.Enum.ReportCat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 @Builder
@@ -20,8 +20,10 @@ public class Report {
     private Integer id;
 
     private String reportText;
-    private float score;
+    private double score;
     private Timestamp date;
+    @Enumerated(EnumType.STRING)
+    private ReportCat category;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -31,7 +33,5 @@ public class Report {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "location_id")
     private Location location;
-    @OneToMany(mappedBy = "report")
-    private List<EmergencyInfo> emergencyInfos;
 
 }

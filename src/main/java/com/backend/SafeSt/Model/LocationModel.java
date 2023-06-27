@@ -9,6 +9,6 @@ public class LocationModel {
     private Integer id;
     private double longitude;
     private double latitude;
-    private String color;
-    private float averageScore;
+//    private String color;
+    private double averageScore;
 }

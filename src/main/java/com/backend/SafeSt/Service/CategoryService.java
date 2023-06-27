@@ -1,14 +1,11 @@
+/*
 package com.backend.SafeSt.Service;
 
 import com.backend.SafeSt.Entity.Category;
-import com.backend.SafeSt.Mapper.CategoryMapper;
-import com.backend.SafeSt.Model.CategoryModel;
-import com.backend.SafeSt.Repository.CategoryRepository;
 import com.backend.SafeSt.Request.CategoryReq;
 import com.backend.SafeSt.Util.Validation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,3 +26,4 @@ public class CategoryService {
         return categoryMapper.convertEntityToModel(category);
     }
 }
+*/

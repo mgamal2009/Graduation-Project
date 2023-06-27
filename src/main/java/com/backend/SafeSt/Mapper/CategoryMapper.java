@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Mapper;
 
 import com.backend.SafeSt.Entity.Category;
@@ -16,3 +17,4 @@ public class CategoryMapper {
                 .build();
     }
 }
+*/

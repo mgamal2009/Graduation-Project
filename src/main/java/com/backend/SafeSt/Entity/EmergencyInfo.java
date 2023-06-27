@@ -1,5 +1,6 @@
 package com.backend.SafeSt.Entity;
 
+import com.backend.SafeSt.Enum.EmergencyCat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -19,18 +20,14 @@ public class EmergencyInfo {
     private Integer id;
 
     private Timestamp date;
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "emergency_id")
-    private Emergency emergency;
+    @Enumerated(EnumType.STRING)
+    private EmergencyCat category;
+
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "category_id")
-    private Category category;
+
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "location_id")

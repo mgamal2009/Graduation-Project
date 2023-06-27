@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LocationReq {
-    private Integer id;
+//    private Integer id;
 
     private double longitude;
     private double latitude;
-    private String color;
-    private float averageScore;
+//    private String color;
+//    private float averageScore;
 }

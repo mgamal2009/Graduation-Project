@@ -4,14 +4,12 @@ import com.backend.SafeSt.Config.JwtService;
 import com.backend.SafeSt.Entity.*;
 import com.backend.SafeSt.Enum.Role;
 import com.backend.SafeSt.Enum.TokenType;
-import com.backend.SafeSt.Mapper.CustomerMapper;
 import com.backend.SafeSt.Repository.*;
 import com.backend.SafeSt.Request.AuthenticationRequest;
 import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Response.AuthenticationResponse;
 import com.backend.SafeSt.Response.MainResponse;
 import com.backend.SafeSt.Util.RSAUtil;
-import com.backend.SafeSt.Util.ResponseMessage;
 import com.backend.SafeSt.Util.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
-    private final CustomerLocationRepository customerLocationRepository;
+//    private final CustomerLocationRepository customerLocationRepository;
     private final EmailService emailService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
@@ -57,10 +55,10 @@ public class AuthenticationService {
                 .role(Role.Customer)
                 .build();
         var savedCustomer = customerRepository.save(customer);
-        var location = CustomerLocation.builder()
+       /* var location = CustomerLocation.builder()
                 .customer(savedCustomer)
                 .build();
-        customerLocationRepository.save(location);
+        customerLocationRepository.save(location);*/
         /*var jwtToken = jwtService.generateToken(customer);
         saveCustomerToken(savedCustomer, jwtToken);*/
         ConfirmationToken confirmationToken = new ConfirmationToken(savedCustomer);
@@ -69,7 +67,7 @@ public class AuthenticationService {
         return true;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -95,7 +93,7 @@ public class AuthenticationService {
         var customer = customerRepository.findByEmail(token.getCustomer().getEmail())
                 .orElseThrow(() -> new Exception("User not found"));
         if (customer.isEnabled())
-            return new MainResponse(HttpStatus.OK, "Already Confirmed!");
+            return new MainResponse(HttpStatus.OK, "Your Account is  Already Confirmed!");
         TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
         if (token.getCreatedDate().plusHours(1).isBefore(LocalDateTime.now())) {
             resendConfirmationEmail(token);
@@ -103,7 +101,7 @@ public class AuthenticationService {
         }
         customer.setEnabled(true);
         customerRepository.save(customer);
-        return new MainResponse(HttpStatus.OK, "Confirmed Successfully!");
+        return new MainResponse(HttpStatus.OK, "Your Account is Confirmed Successfully!");
     }
 
     public void resendConfirmationEmail(ConfirmationToken token) throws Exception {

@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Controller;
 
 import com.backend.SafeSt.Request.CategoryReq;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-    /*@PostMapping(value = "/addCategory")
+    @PostMapping(value = "/addCategory")
     public MainResponse createCategory(@RequestBody CategoryReq req) {
         try {
             return new MainResponse(HttpStatus.OK,
@@ -26,5 +27,6 @@ public class CategoryController {
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
-    }*/
+    }
 }
+*/

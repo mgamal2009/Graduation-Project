@@ -1,3 +1,4 @@
+/*
 package com.backend.SafeSt.Repository;
 
 import com.backend.SafeSt.Entity.CustomerLocation;
@@ -10,3 +11,4 @@ import java.util.Optional;
 public interface CustomerLocationRepository extends JpaRepository<CustomerLocation, Integer> {
     Optional<CustomerLocation> findByCustomer_Id(Integer id);
 }
+*/
