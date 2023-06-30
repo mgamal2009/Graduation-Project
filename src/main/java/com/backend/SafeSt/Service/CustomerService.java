@@ -35,11 +35,14 @@ public class CustomerService {
         if (!(Validation.validateString(req.getEmail()))) {
             throw new Exception("Email couldn't be empty");
         }
-        Optional<Customer> trusted = customerRepository.findByEmail(req.getEmail());
+        Optional<Customer> trusted = customerRepository.findByEmailAndEnabled(req.getEmail(),true);
         if (trusted.isEmpty()) {
             throw new Exception("Email not found");
         }
         Customer foundTrusted = trusted.get();
+        if (Objects.equals(foundTrusted.getId(), c.getId())){
+            throw new Exception("You can't add your self");
+        }
         Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(c.getId(), foundTrusted.getId());
         if (found.isPresent()){
             throw new Exception("Already In Your List");
