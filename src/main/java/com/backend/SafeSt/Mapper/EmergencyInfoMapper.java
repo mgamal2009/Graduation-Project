@@ -11,7 +11,7 @@ public class EmergencyInfoMapper {
     public EmergencyInfoModel convertEntityToModel(EmergencyInfo emergencyInfo) {
         return EmergencyInfoModel.builder()
                 .id(emergencyInfo.getId())
-                .date(emergencyInfo.getDate().toString())
+                .date(emergencyInfo.getDate().toString().replace(' ','@'))
                 .category(emergencyInfo.getCategory().toString())
                 .customerId(emergencyInfo.getCustomer().getId())
                 .reportId(emergencyInfo.getReport().getId())

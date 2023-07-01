@@ -12,7 +12,7 @@ public class ReportMapper {
         return ReportModel.builder()
                 .id(report.getId())
                 .reportText(report.getReportText())
-                .date(report.getDate().toString())
+                .date(report.getDate().toString().replace(' ','@'))
                 .category(report.getCategory().toString())
                 .score(report.getScore())
                 .customerId(report.getCustomer().getId())
