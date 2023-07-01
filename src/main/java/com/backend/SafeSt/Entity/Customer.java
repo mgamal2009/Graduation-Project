@@ -31,6 +31,9 @@ public class Customer implements UserDetails {
     @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
     private boolean enabled = false;
 
+    @Column(nullable = false, columnDefinition = "TINYINT", length = 1)
+    private boolean savedVoice = false;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

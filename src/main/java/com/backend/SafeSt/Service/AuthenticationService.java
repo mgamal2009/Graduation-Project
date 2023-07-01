@@ -81,6 +81,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(customer.getId())
+                .savedVoice(customer.isSavedVoice())
                 .build();
     }
 

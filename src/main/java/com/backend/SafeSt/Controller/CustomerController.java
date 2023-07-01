@@ -105,6 +105,17 @@ public class CustomerController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+    @PostMapping(value = "/setVoice")
+    public MainResponse setVoice(@RequestParam int saved,@RequestParam int id, Authentication auth) {
+        try {
+            return new MainResponse(HttpStatus.OK,
+                    ResponseMessage.EXECUTED,
+                    customerService.setVoice(id,saved,auth));
+        } catch (Exception exception) {
+            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        }
+    }
+
 
 
 }

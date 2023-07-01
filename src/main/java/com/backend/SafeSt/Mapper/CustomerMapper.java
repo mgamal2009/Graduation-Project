@@ -18,6 +18,7 @@ public class CustomerMapper {
                 .lastname(customer.getLastName())
                 .email(customer.getEmail())
                 .phoneNumber(customer.getPhoneNumber())
+                .savedVoice(customer.isSavedVoice())
                 .build();
     }
 }

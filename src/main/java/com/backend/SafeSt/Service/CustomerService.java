@@ -35,16 +35,16 @@ public class CustomerService {
         if (!(Validation.validateString(req.getEmail()))) {
             throw new Exception("Email couldn't be empty");
         }
-        Optional<Customer> trusted = customerRepository.findByEmailAndEnabled(req.getEmail(),true);
+        Optional<Customer> trusted = customerRepository.findByEmailAndEnabled(req.getEmail(), true);
         if (trusted.isEmpty()) {
             throw new Exception("Email not found");
         }
         Customer foundTrusted = trusted.get();
-        if (Objects.equals(foundTrusted.getId(), c.getId())){
+        if (Objects.equals(foundTrusted.getId(), c.getId())) {
             throw new Exception("You can't add your self");
         }
         Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(c.getId(), foundTrusted.getId());
-        if (found.isPresent()){
+        if (found.isPresent()) {
             throw new Exception("Already In Your List");
         }
         var trustedContact = TrustedContact.builder()
@@ -78,11 +78,13 @@ public class CustomerService {
         trustedContactRepository.deleteTrustedContactByCustomer_IdAndTrusted_Id(customer.getId(), foundTrusted.getId());
         return true;
     }
-    public CustomerModel updatePersonalInfo(CustomerReq req,Authentication auth) throws Exception {
-        Customer customer =  checkLoggedIn(req.getId(), auth);
-        if (!req.getFirstname().isBlank()){
+
+    public CustomerModel updatePersonalInfo(CustomerReq req, Authentication auth) throws Exception {
+        Customer customer = checkLoggedIn(req.getId(), auth);
+        if (!req.getFirstname().isBlank()) {
             customer.setFirstName(req.getFirstname());
-        }if (!req.getLastname().isBlank()){
+        }
+        if (!req.getLastname().isBlank()) {
             customer.setLastName(req.getLastname());
         }
         /*if (req.getPassword() != null && req.getConfirmationPassword() != null && req.getOldPassword() != null ){
@@ -101,7 +103,7 @@ public class CustomerService {
         if (req.getPassword() != null || req.getConfirmationPassword() != null || req.getOldPassword() != null ) {
             throw new Exception("Passwords can't be empty");
         }*/
-        if (!req.getPhoneNumber().isBlank()){
+        if (!req.getPhoneNumber().isBlank()) {
             customer.setPhoneNumber(req.getPhoneNumber());
         }
         customerRepository.save(customer);
@@ -109,9 +111,10 @@ public class CustomerService {
     }
 
     public CustomerModel getPersonalInfo(int id, Authentication auth) throws Exception {
-        Customer customer =  checkLoggedIn(id, auth);
+        Customer customer = checkLoggedIn(id, auth);
         return customerMapper.convertEntityToModel(customer);
     }
+
     /*public CustomerModel getTrustedInfo(int id,String email, Authentication auth) throws Exception {
         checkLoggedIn(id, auth);
         Optional<Customer> trusted = customerRepository.findByEmail(email);
@@ -140,13 +143,23 @@ public class CustomerService {
     public ArrayList<TrustedContactModel> getAllTrustedContacts(int id, Authentication auth) throws Exception {
         Customer c = checkLoggedIn(id, auth);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             throw new Exception("User Don't have Trusted Contacts");
         }
         ArrayList<TrustedContactModel> listModel = new ArrayList<>();
-        for (TrustedContact t : list){
+        for (TrustedContact t : list) {
             listModel.add(trustedContactMapper.convertEntityToModel(t));
         }
         return listModel;
+    }
+
+    public boolean setVoice(int id, int saved, Authentication auth) throws Exception {
+        Customer c = checkLoggedIn(id, auth);
+        if (saved == 1) {
+            c.setSavedVoice(true);
+            customerRepository.save(c);
+            return true;
+        }
+        return false;
     }
 }
