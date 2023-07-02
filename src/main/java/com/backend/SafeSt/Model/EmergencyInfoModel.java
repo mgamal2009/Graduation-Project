@@ -9,6 +9,7 @@ import lombok.Data;
 public class EmergencyInfoModel {
     private Integer id;
     private String date;
+    private String time;
     private String category;
 //    private Integer emergencyId;
     private Integer customerId;

@@ -7,8 +7,10 @@ import lombok.Data;
 @Builder
 public class TripModel {
     private Integer id;
-    private String startedAt;
-    private String estimatedEnd;
+    private String startedAtDate;
+    private String startedAtTime;
+    private String estimatedEndDate;
+    private String estimatedEndTime;
     private int estimatedTime;
     private long remainingTime;
     private boolean ended;

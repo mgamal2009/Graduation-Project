@@ -12,6 +12,7 @@ public class ReportModel {
     private String category;
     private double score;
     private String date;
+    private String time;
     private Integer locationId;
     private Integer customerId;
 }
