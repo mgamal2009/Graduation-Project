@@ -24,7 +24,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -58,10 +57,10 @@ public class ReportService {
                 .customer(c)
                 .build();
         switch (report.getCategory()) {
-            case Harassment -> report.setScore(3.0);
-            case Accident -> report.setScore(1.0);
+            case Harassment -> report.setScore(2.0);
+            case Kidnapping -> report.setScore(3.0);
             case Murder -> report.setScore(4.0);
-            case Robbery -> report.setScore(2.0);
+            case Robbery -> report.setScore(1.0);
         }
         location = locationRepository.save(location);
         report = reportRepository.save(report);
