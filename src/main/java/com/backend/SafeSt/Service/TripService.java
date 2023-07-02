@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.TimeZone;
@@ -34,19 +36,18 @@ public class TripService {
         double sourceLat3 = (Math.floor(req.getSourceLatitude() * 1000) / 1000.0);
         double destinationLong3 = (Math.floor(req.getDestinationLongitude() * 1000) / 1000.0);
         double destinationLat3 = (Math.floor(req.getDestinationLatitude() * 1000) / 1000.0);
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        ZonedDateTime temp = ZonedDateTime.now(ZoneId.of("Africa/Cairo"));
         var trip = Trip.builder()
                 .sourceLongitude(sourceLong3)
                 .sourceLatitude(sourceLat3)
                 .destinationLongitude(destinationLong3)
                 .destinationLatitude(destinationLat3)
                 .estimatedTime(req.getEstimatedTime())
-                .startedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .startedAt(Timestamp.valueOf(temp.toLocalDateTime()))
                 .ended(false)
                 .build();
         long period = (long) (req.getEstimatedTime() * 1.5);
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
-        trip.setEstimatedEnd(Timestamp.valueOf(LocalDateTime.now().plusMinutes(period)));
+        trip.setEstimatedEnd(Timestamp.valueOf(temp.toLocalDateTime().plusMinutes(period)));
         trip.setRemainingTime(period);
         trip.setCustomer(c);
         tripRepository.save(trip);
@@ -82,8 +83,8 @@ public class TripService {
         if (list.isEmpty()) {
             return null;
         }
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
-        long minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), list.get(0).getEstimatedEnd().toLocalDateTime());
+        
+        long minutes = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
         if (minutes < 0) {
             throw new Exception("Time ended Are you Ok?");
         }
@@ -96,14 +97,14 @@ public class TripService {
         CustomerService.checkLoggedIn(req.getCustomerId(), auth);
         var trip = tripRepository.findByCustomer_IdAndId(req.getCustomerId(), req.getId())
                 .orElseThrow(() -> new Exception("Trip not Found"));
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
-        long dif = ChronoUnit.MINUTES.between(LocalDateTime.now(), trip.getEstimatedEnd().toLocalDateTime());
+        
+        long dif = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
         if (dif < 0) {
             dif *= -1;
-            req.setAddMin((int) (dif + 5));
+            req.setAddMin((int) (dif + req.getAddMin() + 1));
         }
         trip.setEstimatedEnd(Timestamp.valueOf(trip.getEstimatedEnd().toLocalDateTime().plusMinutes(req.getAddMin())));
-        long minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), trip.getEstimatedEnd().toLocalDateTime());
+        long minutes = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
         trip.setRemainingTime(minutes);
         tripRepository.save(trip);
         return tripMapper.convertEntityToModel(trip);

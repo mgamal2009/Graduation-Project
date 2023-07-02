@@ -20,7 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 @Service
@@ -95,8 +96,8 @@ public class AuthenticationService {
                 .orElseThrow(() -> new Exception("User not found"));
         if (customer.isEnabled())
             return new MainResponse(HttpStatus.OK, "Your Account is  Already Confirmed!");
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
-        if (token.getCreatedDate().plusHours(1).isBefore(LocalDateTime.now())) {
+        
+        if (token.getCreatedDate().plusHours(1).isBefore(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime())) {
             resendConfirmationEmail(token);
             throw new Exception("Link is Expired! New Link Was Sent to Your Email.");
         }
@@ -133,7 +134,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new Exception("Reset Token Not Found!!"));
         if (resetToken.isUsed())
             throw new Exception("Reset Token Is Already Used!!");
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        
         if (resetToken.getCreatedDate().plusHours(1).isBefore(LocalDateTime.now())) {
             throw new Exception("Reset Token Is Expired!!");
         }

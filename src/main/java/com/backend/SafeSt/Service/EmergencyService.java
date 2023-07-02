@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -35,9 +36,9 @@ public class EmergencyService {
     @Transactional
     public EmergencyInfoModel createEmergency(EmergencyInfoReq req, Authentication auth) throws Exception  {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        
         var emergency = EmergencyInfo.builder()
-                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                 .category(EmergencyCat.valueOf(req.getCategory()))
                 .customer(c)
                 .build();
@@ -54,9 +55,9 @@ public class EmergencyService {
                 .averageScore(0.0)
                 .reportsCount(0)
                 .build());
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        
         var report = Report.builder()
-                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                 .category(ReportCat.valueOf(req.getCategory()))
                 .reportText("I faced in this location a " + req.getCategory())
                 .customer(c)

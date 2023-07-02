@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,9 +50,9 @@ public class ReportService {
                 .averageScore(0.0)
                 .reportsCount(0)
                 .build());
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        
         var report = Report.builder()
-                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                 .category(ReportCat.valueOf(req.getCategory()))
                 .reportText(req.getReportText())
                 .customer(c)

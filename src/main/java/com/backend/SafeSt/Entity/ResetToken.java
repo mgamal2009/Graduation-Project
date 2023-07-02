@@ -35,7 +35,7 @@ public class ResetToken {
 
     public ResetToken(Customer customer) {
         this.customer = customer;
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
+        
         createdDate = LocalDateTime.now();
         resetToken = UUID.randomUUID().toString();
         used=false;

@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDateTime;
-import java.util.TimeZone;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Data
@@ -31,7 +32,6 @@ public class ConfirmationToken {
     public ConfirmationToken(Customer customer){
         this.customer = customer;
         confirmationToken = UUID.randomUUID().toString();
-        TimeZone.setDefault(TimeZone.getTimeZone("Africa/Cairo"));
-        createdDate=LocalDateTime.now();
+        createdDate= ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime();
     }
 }
