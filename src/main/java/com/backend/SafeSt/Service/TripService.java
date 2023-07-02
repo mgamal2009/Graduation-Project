@@ -12,12 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +46,7 @@ public class TripService {
                 .build();
         long period = (long) (req.getEstimatedTime() * 1.5);
         trip.setEstimatedEnd(Timestamp.valueOf(temp.toLocalDateTime().plusMinutes(period)));
-        trip.setRemainingTime(period);
+        trip.setRemainingTime(period * 60);
         trip.setCustomer(c);
         tripRepository.save(trip);
         return tripMapper.convertEntityToModel(trip);
@@ -84,11 +82,11 @@ public class TripService {
             return null;
         }
         
-        long minutes = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
-        if (minutes < 0) {
+        long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
+        if (seconds < 0) {
             throw new Exception("Time ended Are you Ok?");
         }
-        list.get(0).setRemainingTime(minutes);
+        list.get(0).setRemainingTime(seconds);
         Trip t = tripRepository.save(list.get(0));
         return tripMapper.convertEntityToModel(t);
     }
@@ -98,14 +96,14 @@ public class TripService {
         var trip = tripRepository.findByCustomer_IdAndId(req.getCustomerId(), req.getId())
                 .orElseThrow(() -> new Exception("Trip not Found"));
         
-        long dif = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
+        long dif = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
         if (dif < 0) {
             dif *= -1;
-            req.setAddMin((int) (dif + req.getAddMin() + 1));
+            req.setAddMin((int) (dif + (req.getAddMin() * 60)));
         }
-        trip.setEstimatedEnd(Timestamp.valueOf(trip.getEstimatedEnd().toLocalDateTime().plusMinutes(req.getAddMin())));
-        long minutes = ChronoUnit.MINUTES.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
-        trip.setRemainingTime(minutes);
+        trip.setEstimatedEnd(Timestamp.valueOf(trip.getEstimatedEnd().toLocalDateTime().plusSeconds(req.getAddMin())));
+        long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
+        trip.setRemainingTime(seconds);
         tripRepository.save(trip);
         return tripMapper.convertEntityToModel(trip);
     }
