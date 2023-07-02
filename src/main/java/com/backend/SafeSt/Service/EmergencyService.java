@@ -55,29 +55,34 @@ public class EmergencyService {
                 .averageScore(0.0)
                 .reportsCount(0)
                 .build());
-        
-        var report = Report.builder()
-                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
-                .category(ReportCat.valueOf(req.getCategory()))
-                .reportText("I faced in this location a " + req.getCategory())
-                .customer(c)
-                .build();
-        switch (report.getCategory()){
-            case Harassment -> report.setScore(3.0);
-            case Accident -> report.setScore(1.0);
-            case Murder -> report.setScore(4.0);
-            case Robbery -> report.setScore(2.0);
+        if (!(req.getCategory().equals("CarFault")|| req.getCategory().equals("Fire")|| req.getCategory().equals("UserDidntArrive"))){
+            var report = Report.builder()
+                    .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
+                    .category(ReportCat.valueOf(req.getCategory()))
+                    .reportText("I faced in this location a " + req.getCategory())
+                    .customer(c)
+                    .build();
+            switch (report.getCategory()){
+                case Harassment -> report.setScore(2.0);
+                case Kidnapping -> report.setScore(3.0);
+                case Murder -> report.setScore(4.0);
+                case Robbery -> report.setScore(1.0);
+            }
+            report = reportRepository.save(report);
+            location = locationRepository.save(location);
+            location.setAverageScore((location.getAverageScore()* location.getReportsCount() + report.getScore()) / (location.getReportsCount() + 1));
+            location.setReportsCount(location.getReportsCount() + 1);
+            report.setLocation(location);
+            location = locationRepository.save(location);
+            report = reportRepository.save(report);
+            emergency.setLocation(location);
+            emergency.setReport(report);
+        }else{
+            location = locationRepository.save(location);
+            emergency.setLocation(location);
         }
-        location = locationRepository.save(location);
-        report = reportRepository.save(report);
-        location.setAverageScore((location.getAverageScore()* location.getReportsCount() + report.getScore()) / (location.getReportsCount() + 1));
-        location.setReportsCount(location.getReportsCount() + 1);
-        report.setLocation(location);
-        location = locationRepository.save(location);
-        report = reportRepository.save(report);
 
-        emergency.setLocation(location);
-        emergency.setReport(report);
+
         emergencyInfoRepository.save(emergency);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
         for (TrustedContact t: list) {

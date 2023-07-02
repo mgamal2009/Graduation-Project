@@ -1,9 +1,12 @@
 package com.backend.SafeSt.Enum;
 
 public enum EmergencyCat {
-    Accident,
+    CarFault,
     Harassment,
     Robbery,
-    Murder
+    Murder,
+    Fire,
+    Kidnapping,
+    UserDidntArrive
 
 }

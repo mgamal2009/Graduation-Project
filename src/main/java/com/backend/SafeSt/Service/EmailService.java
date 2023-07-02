@@ -41,7 +41,7 @@ public class EmailService {
     public void sendEmergency(String firstName, String to, String longitude, String latitude, String trustedName, String category,String date ) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("Complete Registration!");
+        message.setSubject("Emergency!");
         message.setText("Dear "+ firstName + ",\n" +
                 "\n" +
                 "Your Trusted User " + trustedName +" faced an emergency (" + category + ")\n" +

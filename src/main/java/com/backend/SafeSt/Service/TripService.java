@@ -46,7 +46,7 @@ public class TripService {
                 .build();
         long period = (long) (req.getEstimatedTime() * 1.5);
         trip.setEstimatedEnd(Timestamp.valueOf(temp.toLocalDateTime().plusMinutes(period)));
-        trip.setRemainingTime(period * 60);
+        trip.setRemainingTime(period);
         trip.setCustomer(c);
         tripRepository.save(trip);
         return tripMapper.convertEntityToModel(trip);
