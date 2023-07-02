@@ -45,7 +45,7 @@ public class TripService {
                 .ended(false)
                 .build();
         long period = (long) (req.getEstimatedTime() * 1.5);
-        trip.setEstimatedEnd(Timestamp.valueOf(temp.toLocalDateTime().plusMinutes(period)));
+        trip.setEstimatedEnd(Timestamp.valueOf(temp.toLocalDateTime().plusSeconds(period)));
         trip.setRemainingTime(period);
         trip.setCustomer(c);
         tripRepository.save(trip);
@@ -99,9 +99,10 @@ public class TripService {
                 .orElseThrow(() -> new Exception("Trip not Found"));
         
         long dif = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
+        req.setAddMin(req.getAddMin() * 60);
         if (dif < 0) {
             dif *= -1;
-            req.setAddMin((int) (dif + (req.getAddMin() * 60)));
+            req.setAddMin((int) (dif + req.getAddMin()));
         }
         trip.setEstimatedEnd(Timestamp.valueOf(trip.getEstimatedEnd().toLocalDateTime().plusSeconds(req.getAddMin())));
         long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
