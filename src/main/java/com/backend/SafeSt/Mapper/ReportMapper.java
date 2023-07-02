@@ -14,7 +14,7 @@ public class ReportMapper {
                 .id(report.getId())
                 .reportText(report.getReportText())
                 .date(date[0])
-                .time(date[1])
+                .time(date[1].replaceAll(":","-"))
                 .category(report.getCategory().toString())
                 .score(report.getScore())
                 .customerId(report.getCustomer().getId())

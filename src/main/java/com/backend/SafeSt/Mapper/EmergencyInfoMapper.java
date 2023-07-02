@@ -13,7 +13,7 @@ public class EmergencyInfoMapper {
         return EmergencyInfoModel.builder()
                 .id(emergencyInfo.getId())
                 .date(date[0])
-                .time(date[1])
+                .time(date[1].replaceAll(":","-"))
                 .category(emergencyInfo.getCategory().toString())
                 .customerId(emergencyInfo.getCustomer().getId())
                 .reportId(emergencyInfo.getReport().getId())
