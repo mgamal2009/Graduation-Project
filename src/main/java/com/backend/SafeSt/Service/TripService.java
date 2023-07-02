@@ -84,6 +84,8 @@ public class TripService {
         
         long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
         if (seconds < 0) {
+            list.get(0).setRemainingTime(0);
+            tripRepository.save(list.get(0));
             throw new Exception("Time ended Are you Ok?");
         }
         list.get(0).setRemainingTime(seconds);
