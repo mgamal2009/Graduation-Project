@@ -15,4 +15,6 @@ public class ReportModel {
     private String time;
     private Integer locationId;
     private Integer customerId;
+    private String firstName;
+    private String lastName;
 }

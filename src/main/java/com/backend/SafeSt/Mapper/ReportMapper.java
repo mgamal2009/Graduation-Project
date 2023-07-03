@@ -18,6 +18,8 @@ public class ReportMapper {
                 .category(report.getCategory().toString())
                 .score(report.getScore())
                 .customerId(report.getCustomer().getId())
+                .firstName(report.getCustomer().getFirstName())
+                .lastName(report.getCustomer().getLastName())
                 .locationId(report.getLocation().getId())
                 .build();
     }
