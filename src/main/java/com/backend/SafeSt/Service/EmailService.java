@@ -38,6 +38,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    @Async
     public void sendEmergency(String firstName, String to, String longitude, String latitude, String trustedName, String category,String date ) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -48,6 +49,19 @@ public class EmailService {
                 "His Location is (Longitude: " + longitude + ", Latitude: " + latitude + ")\n" +
                 "Date: " + date + "\n\n" +
                 "Please Help Contact Him\n" +
+                "\n\nSincerely,\n\n" +
+                "Safe St. Team");
+        message.setFrom("safe.st.sec@gmail.com");
+        mailSender.send(message);
+    }
+    @Async
+    public void sendNotifyEmail(String firstName, String to,String trustedName,String trustedEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Notify Trusted!");
+        message.setText("Dear "+ firstName + ",\n" +
+                "\n" +
+                "User (" + trustedName +",Email: "+ trustedEmail +") added you as a trusted contact\n" +
                 "\n\nSincerely,\n\n" +
                 "Safe St. Team");
         message.setFrom("safe.st.sec@gmail.com");

@@ -28,6 +28,7 @@ public class CustomerService {
     private final TrustedContactRepository trustedContactRepository;
     private final CustomerMapper customerMapper;
     private final TrustedContactMapper trustedContactMapper;
+    private final EmailService emailService;
 
     @Transactional
     public TrustedContactModel addTrustedContact(TrustedContactReq req, Authentication auth) throws Exception {
@@ -52,6 +53,7 @@ public class CustomerService {
                 .trusted(foundTrusted)
                 .build();
         trustedContactRepository.save(trustedContact);
+        emailService.sendNotifyEmail(foundTrusted.getFirstName(), foundTrusted.getEmail(), c.getFirstName(),c.getEmail());
         return trustedContactMapper.convertEntityToModel(trustedContact);
     }
 
