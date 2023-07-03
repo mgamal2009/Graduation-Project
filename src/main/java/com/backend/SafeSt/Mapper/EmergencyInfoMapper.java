@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 public class EmergencyInfoMapper {
     public EmergencyInfoModel convertEntityToModel(EmergencyInfo emergencyInfo) {
         String [] date = emergencyInfo.getDate().toString().split(" ");
-        return EmergencyInfoModel.builder()
+        if (emergencyInfo.getReport() != null)
+            return EmergencyInfoModel.builder()
                 .id(emergencyInfo.getId())
                 .date(date[0])
                 .time(date[1].replaceAll(":","-"))
@@ -19,6 +20,15 @@ public class EmergencyInfoMapper {
                 .reportId(emergencyInfo.getReport().getId())
                 .locationId(emergencyInfo.getLocation().getId())
                 .build();
+        else
+            return EmergencyInfoModel.builder()
+                    .id(emergencyInfo.getId())
+                    .date(date[0])
+                    .time(date[1].replaceAll(":","-"))
+                    .category(emergencyInfo.getCategory().toString())
+                    .customerId(emergencyInfo.getCustomer().getId())
+                    .locationId(emergencyInfo.getLocation().getId())
+                    .build();
 
     }
 }
