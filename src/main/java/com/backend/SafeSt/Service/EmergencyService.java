@@ -36,12 +36,6 @@ public class EmergencyService {
     @Transactional
     public EmergencyInfoModel createEmergency(EmergencyInfoReq req, Authentication auth) throws Exception  {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        
-        var emergency = EmergencyInfo.builder()
-                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
-                .category(EmergencyCat.valueOf(req.getCategory()))
-                .customer(c)
-                .build();
         String long3 = BigDecimal.valueOf(Double.parseDouble(req.getLongitude()))
                 .setScale(3, RoundingMode.FLOOR)
                 .toString();
@@ -55,6 +49,14 @@ public class EmergencyService {
                 .averageScore(0.0)
                 .reportsCount(0)
                 .build());
+        if (l.isEmpty())
+            location = locationRepository.save(location);
+        var emergency = EmergencyInfo.builder()
+                .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
+                .category(EmergencyCat.valueOf(req.getCategory()))
+                .customer(c)
+                .build();
+
         if (!(req.getCategory().equals("CarFault")|| req.getCategory().equals("Fire")|| req.getCategory().equals("UserDidntArrive"))){
             var report = Report.builder()
                     .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
@@ -69,7 +71,6 @@ public class EmergencyService {
                 case Robbery -> report.setScore(1.0);
             }
             report = reportRepository.save(report);
-            location = locationRepository.save(location);
             location.setAverageScore((location.getAverageScore()* location.getReportsCount() + report.getScore()) / (location.getReportsCount() + 1));
             location.setReportsCount(location.getReportsCount() + 1);
             report.setLocation(location);
@@ -77,12 +78,9 @@ public class EmergencyService {
             report = reportRepository.save(report);
             emergency.setLocation(location);
             emergency.setReport(report);
-        }else{
-            location = locationRepository.save(location);
+        }else {
             emergency.setLocation(location);
         }
-
-
         emergencyInfoRepository.save(emergency);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());
         for (TrustedContact t: list) {

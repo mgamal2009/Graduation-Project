@@ -49,7 +49,8 @@ public class ReportService {
                 .averageScore(0.0)
                 .reportsCount(0)
                 .build());
-        
+        if (l.isEmpty())
+            location = locationRepository.save(location);
         var report = Report.builder()
                 .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                 .category(ReportCat.valueOf(req.getCategory()))
@@ -62,7 +63,6 @@ public class ReportService {
             case Murder -> report.setScore(4.0);
             case Robbery -> report.setScore(1.0);
         }
-        location = locationRepository.save(location);
         report = reportRepository.save(report);
         location.setAverageScore((location.getAverageScore() * location.getReportsCount() + report.getScore()) / (location.getReportsCount() + 1));
         location.setReportsCount(location.getReportsCount() + 1);
