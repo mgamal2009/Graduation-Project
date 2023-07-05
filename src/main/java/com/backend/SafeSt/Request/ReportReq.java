@@ -14,11 +14,7 @@ public class ReportReq {
     private Integer id;
     private String reportText;
     private String category;
-//    private float score;
-//    @JsonDeserialize(using = TimestampDeserializer.class )
-//    private Timestamp date;
     private String longitude;
     private String latitude;
-//    private Integer locationId;
     private Integer customerId;
 }

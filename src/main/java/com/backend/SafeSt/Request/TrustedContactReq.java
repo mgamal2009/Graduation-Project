@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TrustedContactReq {
     private Integer userId;
-
     private String email;
-//    private Integer trustedId;
 }

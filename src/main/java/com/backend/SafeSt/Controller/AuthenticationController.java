@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+
     @PostMapping("/register")
     public MainResponse register(@RequestBody CustomerReq request) {
         try {
@@ -26,6 +27,7 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+
     @PostMapping("/authenticate")
     public MainResponse authenticate(@RequestBody AuthenticationRequest request) {
         try {
@@ -36,6 +38,7 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+
     @GetMapping(value = "/confirm-account")
     public MainResponse confirmMail(@RequestParam String urlToken) {
         try {
@@ -44,43 +47,16 @@ public class AuthenticationController {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+
     @PostMapping("/logout")
     public MainResponse logout(@RequestBody CustomerReq request, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.EXECUTED,
-                    authenticationService.logout(request,auth));
+                    authenticationService.logout(request, auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
 
-    /*@GetMapping(value = "/resend-confirmation-email")
-    public MainResponse resendConfirmationEmail(@RequestParam String urlToken) {
-        try {
-            return authenticationService.resendConfirmationEmail(urlToken);
-        } catch (Exception e) {
-            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        }
-    }*/
-
-    /*@GetMapping(value = "/reset-password")
-    public MainResponse sendResetMail(@RequestParam String email) {
-        try {
-            return authenticationService.sendResetPasswordMail(email);
-        } catch (Exception exception) {
-            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        }
-    }
-
-    @PostMapping(value = "/update-password")
-    public MainResponse updatePassword(@RequestBody ResetPasswordReq req) {
-        try {
-            return new MainResponse(HttpStatus.OK,
-                    ResponseMessage.UPDATED,
-                    authenticationService.updatePassword(req));
-        } catch (Exception e) {
-            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }*/
 }

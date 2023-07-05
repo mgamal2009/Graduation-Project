@@ -15,7 +15,6 @@ public class CustomerReq {
     private String lastname;
     private String email;
     private String password;
-//    private String oldPassword;
     private String confirmationPassword;
     private String phoneNumber;
 }

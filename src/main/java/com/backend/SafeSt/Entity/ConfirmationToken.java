@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -29,9 +30,10 @@ public class ConfirmationToken {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    public ConfirmationToken(Customer customer){
+
+    public ConfirmationToken(Customer customer) {
         this.customer = customer;
         confirmationToken = UUID.randomUUID().toString();
-        createdDate= ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime();
+        createdDate = ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime();
     }
 }

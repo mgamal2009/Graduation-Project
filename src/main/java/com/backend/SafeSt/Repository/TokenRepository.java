@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TokenRepository extends JpaRepository<Token,Integer> {
+public interface TokenRepository extends JpaRepository<Token, Integer> {
 
     List<Token> findAllTokensByCustomer(Customer customer);
+
     Optional<Token> findByCustomer_Id(Integer id);
+
     Optional<Token> findByToken(String token);
 }

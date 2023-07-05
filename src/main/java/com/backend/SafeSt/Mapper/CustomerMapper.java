@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class CustomerMapper {
-//    private final CustomerLocationMapper customerLocationMapper;
 
     public CustomerModel convertEntityToModel(Customer customer) {
         return CustomerModel.builder()

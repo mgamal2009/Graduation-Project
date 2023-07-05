@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Integer> {
-    ArrayList<Trip> findAllByCustomer_IdAndAndEnded(Integer customerId, boolean end );
+    ArrayList<Trip> findAllByCustomer_IdAndAndEnded(Integer customerId, boolean end);
+
     Optional<Trip> findByCustomer_IdAndId(Integer customerId, Integer tripId);
 
 }

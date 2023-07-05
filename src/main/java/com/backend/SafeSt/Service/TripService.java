@@ -81,7 +81,7 @@ public class TripService {
         if (list.isEmpty()) {
             return null;
         }
-        
+
         long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
         if (seconds < 0) {
             list.get(0).setRemainingTime(0);
@@ -97,7 +97,7 @@ public class TripService {
         CustomerService.checkLoggedIn(req.getCustomerId(), auth);
         var trip = tripRepository.findByCustomer_IdAndId(req.getCustomerId(), req.getId())
                 .orElseThrow(() -> new Exception("Trip not Found"));
-        
+
         long dif = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), trip.getEstimatedEnd().toLocalDateTime());
         req.setAddMin(req.getAddMin() * 60);
         if (dif < 0) {

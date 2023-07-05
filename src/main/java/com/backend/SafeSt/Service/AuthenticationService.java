@@ -1,10 +1,14 @@
 package com.backend.SafeSt.Service;
 
 import com.backend.SafeSt.Config.JwtService;
-import com.backend.SafeSt.Entity.*;
+import com.backend.SafeSt.Entity.ConfirmationToken;
+import com.backend.SafeSt.Entity.Customer;
+import com.backend.SafeSt.Entity.Token;
 import com.backend.SafeSt.Enum.Role;
 import com.backend.SafeSt.Enum.TokenType;
-import com.backend.SafeSt.Repository.*;
+import com.backend.SafeSt.Repository.ConfirmationTokenRepository;
+import com.backend.SafeSt.Repository.CustomerRepository;
+import com.backend.SafeSt.Repository.TokenRepository;
 import com.backend.SafeSt.Request.AuthenticationRequest;
 import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Response.AuthenticationResponse;
@@ -22,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +35,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
-//    private final CustomerLocationRepository customerLocationRepository;
     private final EmailService emailService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
@@ -56,12 +58,6 @@ public class AuthenticationService {
                 .role(Role.Customer)
                 .build();
         var savedCustomer = customerRepository.save(customer);
-       /* var location = CustomerLocation.builder()
-                .customer(savedCustomer)
-                .build();
-        customerLocationRepository.save(location);*/
-        /*var jwtToken = jwtService.generateToken(customer);
-        saveCustomerToken(savedCustomer, jwtToken);*/
         ConfirmationToken confirmationToken = new ConfirmationToken(savedCustomer);
         confirmationTokenRepository.save(confirmationToken);
         emailService.sendEmail(savedCustomer.getFirstName(), savedCustomer.getEmail(), confirmationToken.getConfirmationToken());
@@ -96,7 +92,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new Exception("User not found"));
         if (customer.isEnabled())
             return new MainResponse(HttpStatus.OK, "Your Account is  Already Confirmed!");
-        
+
         if (token.getCreatedDate().plusHours(1).isBefore(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime())) {
             resendConfirmationEmail(token);
             throw new Exception("Link is Expired! New Link Was Sent to Your Email.");
@@ -114,39 +110,6 @@ public class AuthenticationService {
         emailService.sendEmail(customer.getFirstName(), customer.getEmail(), newConfirmationToken.getConfirmationToken());
     }
 
-    /*public MainResponse sendResetPasswordMail(String email) {
-        try {
-            var customer = customerRepository.findByEmail(email)
-                    .orElseThrow(() -> new Exception("User not found"));
-            ResetToken resetToken = new ResetToken(customer);
-            resetTokenRepository.save(resetToken);
-            emailService.sendResetMail(customer.getEmail(), resetToken.getResetToken());
-            return new MainResponse(HttpStatus.OK, ResponseMessage.EXECUTED);
-        } catch (Exception exception) {
-            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        }
-    }
-
-    //---> update password
-    public String updatePassword(ResetPasswordReq req) throws Exception {
-        String decryptedToken = RSAUtil.decrypt(req.getUrlToken().replace(" ", "+"));
-        var resetToken = resetTokenRepository.findByResetToken(decryptedToken)
-                .orElseThrow(() -> new Exception("Reset Token Not Found!!"));
-        if (resetToken.isUsed())
-            throw new Exception("Reset Token Is Already Used!!");
-        
-        if (resetToken.getCreatedDate().plusHours(1).isBefore(LocalDateTime.now())) {
-            throw new Exception("Reset Token Is Expired!!");
-        }
-        var c = customerRepository.findById(resetToken.getCustomer().getId())
-                .orElseThrow(() -> new Exception("User not found"));
-        c.setPassword(passwordEncoder.encode(req.getNewPassword()));
-        customerRepository.save(c);
-        resetToken.setUsed(true);
-        resetTokenRepository.save(resetToken);
-        return "Password Reset Successfully";
-    }
-*/
     private void deleteCustomerTokens(Customer customer) {
         var validCustomerTokens = tokenRepository.findAllTokensByCustomer(customer);
         if (validCustomerTokens.isEmpty())
@@ -165,10 +128,10 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public boolean logout(CustomerReq request,Authentication auth) throws Exception {
+    public boolean logout(CustomerReq request, Authentication auth) throws Exception {
         CustomerService.checkLoggedIn(request.getId(), auth);
         var token = tokenRepository.findByCustomer_Id(request.getId())
-                .orElseThrow(()->new Exception("Token not Found"));
+                .orElseThrow(() -> new Exception("Token not Found"));
         token.setExpired(true);
         token.setRevoked(true);
         tokenRepository.save(token);

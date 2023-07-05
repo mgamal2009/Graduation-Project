@@ -11,6 +11,7 @@ import com.backend.SafeSt.Model.ReportModel;
 import com.backend.SafeSt.Repository.LocationRepository;
 import com.backend.SafeSt.Repository.ReportRepository;
 import com.backend.SafeSt.Request.ReportReq;
+import com.backend.SafeSt.Util.Validation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,9 @@ public class ReportService {
     @Transactional
     public ReportModel addReport(ReportReq req, Authentication auth) throws Exception {
         Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
+        if (!(Validation.validateString(req.getCategory(), req.getReportText(), req.getLongitude(), req.getLatitude()))) {
+            throw new Exception("Fields couldn't be empty");
+        }
         String long3 = BigDecimal.valueOf(Double.parseDouble(req.getLongitude()))
                 .setScale(3, RoundingMode.FLOOR)
                 .toString();
@@ -72,9 +76,15 @@ public class ReportService {
         return reportMapper.convertEntityToModel(report);
     }
 
-    public List<ReportModel> listLocationReports(int id,String longitude, String latitude, Authentication auth) throws Exception {
+    public List<ReportModel> listLocationReports(int id, String longitude, String latitude, Authentication auth) throws Exception {
         CustomerService.checkLoggedIn(id, auth);
-        var l = locationRepository.findByLongitudeAndLatitude(longitude, latitude)
+        String long3 = BigDecimal.valueOf(Double.parseDouble(longitude))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
+        String lat3 = BigDecimal.valueOf(Double.parseDouble(latitude))
+                .setScale(3, RoundingMode.FLOOR)
+                .toString();
+        var l = locationRepository.findByLongitudeAndLatitude(long3, lat3)
                 .orElseThrow(() -> new Exception("No Reports Found"));
         List<Report> foundReports = reportRepository.findAllByLocation_Id(l.getId());
         if (foundReports.isEmpty()) {
@@ -90,7 +100,7 @@ public class ReportService {
     public List<LocationModel> listAllLocationWithScore(int id, Authentication auth) throws Exception {
         CustomerService.checkLoggedIn(id, auth);
         List<Location> list = locationRepository.findAll();
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             throw new Exception("No Reports Found");
         }
         List<LocationModel> models = new ArrayList<>();
@@ -99,16 +109,4 @@ public class ReportService {
         }
         return models;
     }
-    /*public List<ReportModel> listCustomerReports(ReportReq req, Authentication auth) throws Exception {
-        Customer c = CustomerService.checkLoggedIn(req.getCustomerId(), auth);
-        List<Report> foundReports = reportRepository.findAllByCustomer_Id(c.getId());
-        if (foundReports.isEmpty()){
-            throw new Exception("No Reports Found");
-        }
-        List<ReportModel> models = new ArrayList<>();
-        for (Report report:foundReports) {
-            models.add(reportMapper.convertEntityToModel(report));
-        }
-        return models;
-    }*/
 }

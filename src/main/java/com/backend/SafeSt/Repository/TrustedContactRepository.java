@@ -12,5 +12,6 @@ public interface TrustedContactRepository extends JpaRepository<TrustedContact, 
     void deleteTrustedContactByCustomer_IdAndTrusted_Id(Integer customerId, Integer trustedId);
 
     Optional<TrustedContact> findByCustomer_IdAndTrusted_Id(Integer customerId, Integer trustedId);
+
     ArrayList<TrustedContact> findAllByCustomer_Id(Integer customerId);
 }

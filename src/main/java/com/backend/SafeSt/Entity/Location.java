@@ -1,7 +1,10 @@
 package com.backend.SafeSt.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
@@ -16,13 +19,7 @@ public class Location {
     private Integer id;
     private String longitude;
     private String latitude;
-//    private String color;
     private double averageScore;
     private long reportsCount = 0;
-
-    /*@OneToMany(mappedBy = "location")
-    private List<EmergencyInfo> emergencyInfos;
-    @OneToMany(mappedBy = "location")
-    private List<Report> reports;*/
-
+    private String address;
 }

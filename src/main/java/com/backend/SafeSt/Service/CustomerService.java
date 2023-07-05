@@ -8,7 +8,6 @@ import com.backend.SafeSt.Model.CustomerModel;
 import com.backend.SafeSt.Model.TrustedContactModel;
 import com.backend.SafeSt.Repository.CustomerRepository;
 import com.backend.SafeSt.Repository.TrustedContactRepository;
-import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Request.TrustedContactReq;
 import com.backend.SafeSt.Util.Validation;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class CustomerService {
                 .trusted(foundTrusted)
                 .build();
         trustedContactRepository.save(trustedContact);
-        emailService.sendNotifyEmail(foundTrusted.getFirstName(), foundTrusted.getEmail(), c.getFirstName(),c.getEmail());
+        emailService.sendNotifyEmail(foundTrusted.getFirstName(), foundTrusted.getEmail(), c.getFirstName(), c.getEmail());
         return trustedContactMapper.convertEntityToModel(trustedContact);
     }
 
@@ -81,61 +80,11 @@ public class CustomerService {
         return true;
     }
 
-    public CustomerModel updatePersonalInfo(CustomerReq req, Authentication auth) throws Exception {
-        Customer customer = checkLoggedIn(req.getId(), auth);
-        if (!req.getFirstname().isBlank()) {
-            customer.setFirstName(req.getFirstname());
-        }
-        if (!req.getLastname().isBlank()) {
-            customer.setLastName(req.getLastname());
-        }
-        /*if (req.getPassword() != null && req.getConfirmationPassword() != null && req.getOldPassword() != null ){
-            if (!req.getPassword().isBlank()){
-                if (!req.getConfirmationPassword().isBlank()&& !req.getOldPassword().isBlank()){
-                    if (req.getPassword().equals(req.getConfirmationPassword())){
-                        customer.setPassword(passwordEncoder.encode(req.getPassword()));
-                    }else{
-                        throw new Exception("Password and Confirmation Password isn't the same");
-                    }
-                }else{
-                    throw new Exception("Old Password and Confirmation Password can't be empty");
-                }
-            }
-        }
-        if (req.getPassword() != null || req.getConfirmationPassword() != null || req.getOldPassword() != null ) {
-            throw new Exception("Passwords can't be empty");
-        }*/
-        if (!req.getPhoneNumber().isBlank()) {
-            customer.setPhoneNumber(req.getPhoneNumber());
-        }
-        customerRepository.save(customer);
-        return customerMapper.convertEntityToModel(customer);
-    }
-
     public CustomerModel getPersonalInfo(int id, Authentication auth) throws Exception {
         Customer customer = checkLoggedIn(id, auth);
         return customerMapper.convertEntityToModel(customer);
     }
 
-    /*public CustomerModel getTrustedInfo(int id,String email, Authentication auth) throws Exception {
-        checkLoggedIn(id, auth);
-        Optional<Customer> trusted = customerRepository.findByEmail(email);
-        if (trusted.isEmpty()) {
-            throw new Exception("Trusted Email not found");
-        }
-        Customer foundTrusted = trusted.get();
-        Optional<TrustedContact> found = trustedContactRepository.findByCustomer_IdAndTrusted_Id(id, foundTrusted.getId());
-        if (found.isEmpty()) {
-            throw new Exception("Email not in your Trusted Contacts");
-        }
-        return CustomerModel.builder()
-                .firstname(foundTrusted.getFirstName())
-                .lastname(foundTrusted.getLastName())
-                .id(foundTrusted.getId())
-                .email(foundTrusted.getEmail())
-                .phoneNumber(foundTrusted.getPhoneNumber())
-                .build();
-    }*/
     public int getNumOfTrusted(int id, Authentication auth) throws Exception {
         Customer c = checkLoggedIn(id, auth);
         ArrayList<TrustedContact> list = trustedContactRepository.findAllByCustomer_Id(c.getId());

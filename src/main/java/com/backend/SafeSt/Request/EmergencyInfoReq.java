@@ -12,14 +12,11 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmergencyInfoReq {
-//    private Integer id;
     private String longitude;
     private String latitude;
     private Timestamp date;
-//    private Integer emergencyId;
     private Integer customerId;
     private String category;
-//    private Integer categoryId;
-//    private Integer locationId;
-//    private Integer reportId;
+    private String address;
+
 }

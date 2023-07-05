@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Data
 public class ReportMapper {
     public ReportModel convertEntityToModel(Report report) {
-        String [] date = report.getDate().toString().split(" ");
+        String[] date = report.getDate().toString().split(" ");
         return ReportModel.builder()
                 .id(report.getId())
-                .reportText(report.getReportText())
+                .reportText(report.getReportText().replaceAll(" ","@"))
                 .date(date[0])
-                .time(date[1].replaceAll(":","-"))
+                .time(date[1].replaceAll(":", "-"))
                 .category(report.getCategory().toString())
                 .score(report.getScore())
                 .customerId(report.getCustomer().getId())

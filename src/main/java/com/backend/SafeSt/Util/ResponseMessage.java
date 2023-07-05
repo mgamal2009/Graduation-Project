@@ -8,8 +8,4 @@ public class ResponseMessage {
     public static final String CREATED = "Created Successfully";
     public static final String ADDED = "Added Successfully";
 
-    public static String noIdWith(String value,long id){
-        return "No "+value+" with Id: "+id;
-    }
-
 }

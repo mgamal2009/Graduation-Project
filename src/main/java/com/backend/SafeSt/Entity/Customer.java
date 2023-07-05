@@ -46,6 +46,7 @@ public class Customer implements UserDetails {
     public String getUsername() {
         return email;
     }
+
     @Override
     public String getPassword() {
         return password;
@@ -71,7 +72,7 @@ public class Customer implements UserDetails {
         return enabled;
     }
 
-    public void setEnabled(boolean b){
+    public void setEnabled(boolean b) {
         this.enabled = b;
     }
 }

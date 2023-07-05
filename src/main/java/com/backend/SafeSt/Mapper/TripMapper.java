@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 @Data
 public class TripMapper {
     public TripModel convertEntityToModel(Trip trip) {
-        String [] startDate = trip.getStartedAt().toString().split(" ");
-        String [] estDate = trip.getEstimatedEnd().toString().split(" ");
+        String[] startDate = trip.getStartedAt().toString().split(" ");
+        String[] estDate = trip.getEstimatedEnd().toString().split(" ");
 
         return TripModel.builder()
                 .id(trip.getId())
                 .startedAtDate(startDate[0])
-                .startedAtTime(startDate[1].replaceAll(":","-"))
+                .startedAtTime(startDate[1].replaceAll(":", "-"))
                 .estimatedEndDate(estDate[0])
-                .estimatedEndTime(estDate[1].replaceAll(":","-"))
+                .estimatedEndTime(estDate[1].replaceAll(":", "-"))
                 .estimatedTime(trip.getEstimatedTime())
                 .remainingTime(trip.getRemainingTime())
                 .ended(trip.isEnded())

@@ -14,6 +14,7 @@ public class LocationMapper {
                 .longitude(location.getLongitude())
                 .latitude(location.getLatitude())
                 .averageScore(location.getAverageScore())
+                .address(location.getAddress())
                 .build();
     }
 }

@@ -10,10 +10,9 @@ public class EmergencyInfoModel {
     private Integer id;
     private String date;
     private String time;
+    private String address;
     private String category;
-//    private Integer emergencyId;
     private Integer customerId;
-//    private Integer categoryId;
     private Integer locationId;
     private Integer reportId;
 }

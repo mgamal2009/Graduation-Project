@@ -14,45 +14,38 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
+
     @PostMapping("/addReport")
-    public MainResponse addReport(@RequestBody ReportReq req, Authentication auth){
+    public MainResponse addReport(@RequestBody ReportReq req, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.CREATED,
-                    reportService.addReport(req,auth));
+                    reportService.addReport(req, auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+
     @GetMapping("/listLocationReports")
-    public MainResponse listLocationReports(@RequestParam Integer id, @RequestParam String longitude,@RequestParam String latitude, Authentication auth){
+    public MainResponse listLocationReports(@RequestParam Integer id, @RequestParam String longitude, @RequestParam String latitude, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.EXECUTED,
-                    reportService.listLocationReports(id,longitude,latitude,auth));
+                    reportService.listLocationReports(id, longitude, latitude, auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
+
     @GetMapping("/listAllLocationWithScore")
-    public MainResponse listAllLocationWithScore(@RequestParam Integer id, Authentication auth){
+    public MainResponse listAllLocationWithScore(@RequestParam Integer id, Authentication auth) {
         try {
             return new MainResponse(HttpStatus.OK,
                     ResponseMessage.EXECUTED,
-                    reportService.listAllLocationWithScore(id,auth));
+                    reportService.listAllLocationWithScore(id, auth));
         } catch (Exception exception) {
             return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         }
     }
-    /*@GetMapping("/listCustomerReports")
-    public MainResponse listCustomerReports(ReportReq req, Authentication auth){
-        try {
-            return new MainResponse(HttpStatus.OK,
-                    ResponseMessage.EXECUTED,
-                    reportService.listCustomerReports(req,auth));
-        } catch (Exception exception) {
-            return new MainResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        }
-    }*/
 
 }
