@@ -133,6 +133,7 @@ public class ReportTest {
             assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
+
     @Test
     public void AddReportTest4() throws Exception {
         JsonNode node = addUser();
@@ -278,15 +279,15 @@ public class ReportTest {
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         new HttpEntity<>(json, headers);
-        HttpEntity<String> request =new HttpEntity<>(null, headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(url +
-                "listLocationReports?id=" + node.path("data").path("id").toString() +
-                "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
+                "listLocationReports?id=1010" + "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals("\"Authentication Error\"", res.path("message").toString());
         assertEquals("null", res.path("data").toString());
         assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
+
     @Test
     public void ListAllLocationWithScoreTest1() throws Exception {
         JsonNode node = addUser();
@@ -334,5 +335,18 @@ public class ReportTest {
         } catch (HttpClientErrorException e) {
             assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
+    }
+
+    @Test
+    public void ListAllLocationWithScoreTest4() throws Exception {
+        JsonNode node = addUser();
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "listAllLocationWithScore?id=1010", HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 }

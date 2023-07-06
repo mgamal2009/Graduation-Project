@@ -107,9 +107,9 @@ public class AuthenticationTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "register", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Password and Confirmation Password Should be the Same!!\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Password and Confirmation Password Should be the Same!!\"",root.path("message").toString());
+        assertEquals("null",root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -158,11 +158,11 @@ public class AuthenticationTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "authenticate", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Executed Successfully\"");
+        assertEquals("\"Executed Successfully\"", root.path("message").toString());
         assertNotNull(root.path("data").path("id"));
         assertNotNull(root.path("data").path("token"));
         assertNotNull(root.path("data").path("saved"));
-        assertEquals(root.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"",root.path("statusCode").toString());
     }
 
     @Test
@@ -180,9 +180,9 @@ public class AuthenticationTest {
         String encryptedToken = Base64.getEncoder().encodeToString(RSAUtil.encrypt(token));
         String personResultAsJsonStr = restTemplate.getForObject(url + "confirm-account?urlToken=" + encryptedToken, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Invalid Link!\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Invalid Link!\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -202,9 +202,9 @@ public class AuthenticationTest {
         customerRepository.save(c);
         String personResultAsJsonStr = restTemplate.getForObject(url + "confirm-account?urlToken=" + encryptedToken, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Your Account is  Already Confirmed!\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Your Account is  Already Confirmed!\"", root.path("message").toString());
+        assertEquals( "null",root.path("data").toString());
+        assertEquals("\"OK\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -223,9 +223,9 @@ public class AuthenticationTest {
         confirmationTokenRepository.save(token);
         String personResultAsJsonStr = restTemplate.getForObject(url + "confirm-account?urlToken=" + encryptedToken, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Link is Expired! New Link Was Sent to Your Email.\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Link is Expired! New Link Was Sent to Your Email.\"", root.path("message").toString());
+        assertEquals( "null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -242,9 +242,9 @@ public class AuthenticationTest {
         String encryptedToken = Base64.getEncoder().encodeToString(RSAUtil.encrypt(token.getConfirmationToken()));
         String personResultAsJsonStr = restTemplate.getForObject(url + "confirm-account?urlToken=" + encryptedToken, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Your Account is Confirmed Successfully!\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Your Account is Confirmed Successfully!\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"OK\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -271,9 +271,9 @@ public class AuthenticationTest {
         request = new HttpEntity<>(json, headers);
         personResultAsJsonStr = restTemplate.postForObject(url + "logout", request, String.class);
         root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals(root.path("data").toString(), "true");
-        assertEquals(root.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Executed Successfully\"", root.path("message").toString());
+        assertEquals("true", root.path("data").toString());
+        assertEquals("\"OK\"",root.path("statusCode").toString());
     }
 
     @Test
@@ -301,9 +301,9 @@ public class AuthenticationTest {
         request = new HttpEntity<>(json, headers);
         personResultAsJsonStr = restTemplate.postForObject(url + "logout", request, String.class);
         root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Authentication Error\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Authentication Error\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test

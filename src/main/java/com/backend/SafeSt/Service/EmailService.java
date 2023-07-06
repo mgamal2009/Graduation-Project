@@ -24,7 +24,7 @@ public class EmailService {
 
     @Async
     public void sendEmail(String firstName, String to, String token) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        /*SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Complete Registration!");
         String encryptedToken = Base64.getEncoder().encodeToString(RSAUtil.encrypt(token));
@@ -36,12 +36,12 @@ public class EmailService {
                 "\n\nSincerely,\n\n" +
                 "Safe St. Team");
         message.setFrom("safe.st.sec@gmail.com");
-        mailSender.send(message);*/
+        mailSender.send(message);
     }
 
     @Async
     public void sendEmergency(String firstName, String to, String longitude, String latitude, String trustedName, String category, String date, String location) {
-       /* SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Emergency!");
         message.setText("Dear " + firstName + ",\n" +
@@ -54,12 +54,12 @@ public class EmailService {
                 "\n\nSincerely,\n\n" +
                 "Safe St. Team");
         message.setFrom("safe.st.sec@gmail.com");
-        mailSender.send(message);*/
+        mailSender.send(message);
     }
 
     @Async
     public void sendNotifyEmail(String firstName, String to, String trustedName, String trustedEmail) {
-       /* SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Notify Trusted!");
         message.setText("Dear " + firstName + ",\n" +
@@ -68,7 +68,7 @@ public class EmailService {
                 "\n\nSincerely,\n\n" +
                 "Safe St. Team");
         message.setFrom("safe.st.sec@gmail.com");
-        mailSender.send(message);*/
+        mailSender.send(message);
     }
 
 }

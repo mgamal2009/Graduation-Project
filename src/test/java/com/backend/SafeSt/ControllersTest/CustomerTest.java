@@ -457,7 +457,7 @@ public class CustomerTest {
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id=1010", HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Authentication Error\"");
         assertEquals("null", res.path("data").toString());
