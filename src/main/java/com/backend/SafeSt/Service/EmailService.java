@@ -46,8 +46,8 @@ public class EmailService {
         message.setSubject("Emergency!");
         message.setText("Dear " + firstName + ",\n" +
                 "\n" +
-                "Your Trusted User " + trustedName + " faced an emergency (" + category + ")\n" +
-                "His Location is (Longitude: " + longitude + ", Latitude: " + latitude + ")\n" +
+                "Your trusted user " + trustedName + " faced an emergency (" + category + ")\n" +
+                "His Location is https://www.google.com/maps/?t=k&q="+latitude+  "," + longitude + "\n" +
                 "Address: " + location + "\n" +
                 "Date: " + date + "\n\n" +
                 "Please Help, Contact Him\n" +
