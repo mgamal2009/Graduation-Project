@@ -64,7 +64,6 @@ public class EmergencyService {
                 .longitude(long3)
                 .averageScore(0.0)
                 .reportsCount(0)
-                .address(req.getAddress())
                 .build());
         if (l.isEmpty())
             location = locationRepository.save(location);
@@ -78,7 +77,7 @@ public class EmergencyService {
             var report = Report.builder()
                     .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                     .category(ReportCat.valueOf(req.getCategory()))
-                    .reportText("I faced in this location a " + req.getCategory())
+                    .reportText("I faced in this location a " + req.getCategory() + " Situation")
                     .customer(c)
                     .build();
             switch (report.getCategory()) {
@@ -110,7 +109,7 @@ public class EmergencyService {
                     t.getCustomer().getFirstName().concat(" ").concat(t.getCustomer().getLastName()),
                     emergency.getCategory().toString(),
                     emergency.getDate().toString(),
-                    location.getAddress());
+                    req.getAddress());
         }
         return emergencyInfoMapper.convertEntityToModel(emergency);
     }

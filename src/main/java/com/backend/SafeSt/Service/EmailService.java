@@ -50,7 +50,7 @@ public class EmailService {
                 "His Location is (Longitude: " + longitude + ", Latitude: " + latitude + ")\n" +
                 "Address: " + location + "\n" +
                 "Date: " + date + "\n\n" +
-                "Please Help Contact Him\n" +
+                "Please Help, Contact Him\n" +
                 "\n\nSincerely,\n\n" +
                 "Safe St. Team");
         message.setFrom("safe.st.sec@gmail.com");

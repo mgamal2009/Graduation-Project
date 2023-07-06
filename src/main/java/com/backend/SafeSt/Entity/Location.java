@@ -21,5 +21,4 @@ public class Location {
     private String latitude;
     private double averageScore;
     private long reportsCount = 0;
-    private String address;
 }
