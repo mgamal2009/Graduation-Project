@@ -17,7 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,16 +33,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @LocalServerPort
     int randomServerPort;
-
-    private RestTemplate restTemplate;
-    private String url;
     JSONObject personJsonObject;
     HttpHeaders headers;
+    private RestTemplate restTemplate;
+    private String url;
     @Autowired
     private CustomerRepository customerRepository;
-
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
 
@@ -52,8 +54,6 @@ public class AuthenticationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         customerRepository.deleteAll();
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void RegisterTest1() throws Exception {
@@ -78,9 +78,9 @@ public class AuthenticationTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "register", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Fields couldn't be empty\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Fields couldn't be empty\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -89,14 +89,13 @@ public class AuthenticationTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(req);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
+        restTemplate.postForObject(url + "register", request, String.class);
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "register", request, String.class);
-        personResultAsJsonStr =
-                restTemplate.postForObject(url + "register", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"This Email is already used\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"This Email is already used\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -122,9 +121,9 @@ public class AuthenticationTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "authenticate", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"Bad credentials\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Bad credentials\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -134,17 +133,14 @@ public class AuthenticationTest {
         String json = ow.writeValueAsString(req);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         restTemplate.postForObject(url + "register", request, String.class);
-        /*Customer c = customerRepository.findByEmail("mahmoud.mohamedgamal1@gmail.com").get();
-        c.setEnabled(true);
-        customerRepository.save(c);*/
         json = ow.writeValueAsString(req);
         request = new HttpEntity<>(json, headers);
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "authenticate", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(root.path("message").toString(), "\"User is disabled\"");
-        assertEquals(root.path("data").toString(), "null");
-        assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"User is disabled\"", root.path("message").toString());
+        assertEquals("null", root.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
 
     @Test
@@ -165,7 +161,7 @@ public class AuthenticationTest {
         assertEquals(root.path("message").toString(), "\"Executed Successfully\"");
         assertNotNull(root.path("data").path("id"));
         assertNotNull(root.path("data").path("token"));
-        assertNotNull(root.path("data").path("saved"), "0");
+        assertNotNull(root.path("data").path("saved"));
         assertEquals(root.path("statusCode").toString(), "\"OK\"");
     }
 
@@ -309,6 +305,7 @@ public class AuthenticationTest {
         assertEquals(root.path("data").toString(), "null");
         assertEquals(root.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
+
     @Test
     public void LogoutTest3() throws Exception {
         String username = "mahmoud.mohamedgamal1@gmail.com";
@@ -334,8 +331,8 @@ public class AuthenticationTest {
         request = new HttpEntity<>(json, headers);
         try {
             restTemplate.exchange(url + "logout", HttpMethod.POST, request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
 
     }

@@ -7,6 +7,7 @@ public enum EmergencyCat {
     Murder,
     Fire,
     Kidnapping,
-    UserDidntArrive
+    UserDidntArrive,
+    InDanger
 
 }

@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReportTest {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @LocalServerPort
     int randomServerPort;
-
-    private RestTemplate restTemplate;
-    private String url;
     JSONObject personJsonObject;
     HttpHeaders headers;
+    private RestTemplate restTemplate;
+    private String url;
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -46,8 +46,6 @@ public class ReportTest {
         customerRepository.deleteAll();
         locationRepository.deleteAll();
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonNode addUser() throws Exception {
         var req = CustomerReq.builder().firstname("mahmoud").lastname("gamal").email("mahmoud.mohamedgamal1@gmail.com").password("1234").confirmationPassword("1234").phoneNumber("01012").build();
@@ -66,20 +64,6 @@ public class ReportTest {
         return objectMapper.readTree(personResultAsJsonStr);
     }
 
-    public void addAnotherUserAndEnabled() throws Exception {
-        String username = "mmge2009@yahoo.com";
-        String password = "1234";
-        var req = CustomerReq.builder().firstname("mahmoud").lastname("gamal").email(username).password(password).confirmationPassword("1234").phoneNumber("01012").build();
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(req);
-        HttpEntity<String> request = new HttpEntity<>(json, headers);
-        String url = "http://localhost:" + randomServerPort + "/auth/";
-        restTemplate.postForObject(url + "register", request, String.class);
-        Customer c = customerRepository.findByEmail(username).get();
-        c.setEnabled(true);
-        customerRepository.save(c);
-    }
-
     @Test
     public void AddReportTest1() throws Exception {
         JsonNode node = addUser();
@@ -91,7 +75,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -99,11 +82,11 @@ public class ReportTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addReport", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Created Successfully\"");
+        assertEquals("\"Created Successfully\"", response.path("message").toString());
         assertNotNull(response.path("data").path("id"));
         assertEquals("\"Robbery\"", response.path("data").path("category").toString());
         assertEquals("1.0", response.path("data").path("score").toString());
-        assertEquals(response.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -117,7 +100,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -125,9 +107,9 @@ public class ReportTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addReport", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Fields couldn't be empty\"");
-        assertEquals("null",response.path("data").toString());
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Fields couldn't be empty\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -141,7 +123,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
@@ -152,6 +133,29 @@ public class ReportTest {
             assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
+    @Test
+    public void AddReportTest4() throws Exception {
+        JsonNode node = addUser();
+        var reportReq = ReportReq.builder()
+                .customerId(1010)
+                .longitude("33.2522")
+                .latitude("32.5448")
+                .category("")
+                .reportText("Report1")
+                .build();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(reportReq);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        String personResultAsJsonStr =
+                restTemplate.postForObject(url + "addReport", request, String.class);
+        JsonNode response = objectMapper.readTree(personResultAsJsonStr);
+        assertEquals("\"Authentication Error\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
+    }
+
 
     @Test
     public void ListLocationReportsTest1() throws Exception {
@@ -164,7 +168,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -175,9 +178,9 @@ public class ReportTest {
                 "listLocationReports?id=" + node.path("data").path("id").toString() +
                 "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"No Reports Found\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"No Reports Found\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -191,7 +194,6 @@ public class ReportTest {
                 .address("new cairo")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(emergencyReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -203,9 +205,9 @@ public class ReportTest {
                 "listLocationReports?id=" + node.path("data").path("id").toString() +
                 "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"No Reports Found\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"No Reports Found\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -219,7 +221,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -228,11 +229,11 @@ public class ReportTest {
         request = new HttpEntity<>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "listLocationReports?id=" + node.path("data").path("id").toString() +
-                "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
+                "&longitude=33.252&latitude=32.544", HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
+        assertEquals("\"Executed Successfully\"", res.path("message").toString());
         assertNotNull(res.path("data").get(0));
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -246,7 +247,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -264,6 +264,30 @@ public class ReportTest {
     }
 
     @Test
+    public void ListLocationReportsTest5() throws Exception {
+        JsonNode node = addUser();
+        var emergencyReq = EmergencyInfoReq.builder()
+                .customerId(node.path("data").path("id").asInt())
+                .longitude("33.2522")
+                .latitude("32.5448")
+                .category("Fire")
+                .address("new cairo")
+                .build();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(emergencyReq);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        new HttpEntity<>(json, headers);
+        HttpEntity<String> request =new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url +
+                "listLocationReports?id=" + node.path("data").path("id").toString() +
+                "&longitude=33.251&latitude=32.555", HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
+    }
+    @Test
     public void ListAllLocationWithScoreTest1() throws Exception {
         JsonNode node = addUser();
         var reportReq = ReportReq.builder()
@@ -274,7 +298,6 @@ public class ReportTest {
                 .reportText("Report1")
                 .build();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(reportReq);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
@@ -282,9 +305,9 @@ public class ReportTest {
         restTemplate.postForObject(url + "addReport", request, String.class);
         ResponseEntity<String> response = restTemplate.exchange(url + "listAllLocationWithScore?id=" + node.path("data").path("id").toString(), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
+        assertEquals("\"Executed Successfully\"", res.path("message").toString());
         assertNotNull(res.path("data").get(0));
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -295,9 +318,9 @@ public class ReportTest {
         HttpEntity<String> request = new HttpEntity<>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(url + "listAllLocationWithScore?id=" + node.path("data").path("id").toString(), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"No Reports Found\"");
-        assertNotNull(res.path("data").get(0));
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"No Reports Found\"", res.path("message").toString());
+        assertNull(res.path("data").get(0));
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test

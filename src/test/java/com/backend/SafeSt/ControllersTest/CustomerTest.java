@@ -1,9 +1,6 @@
 package com.backend.SafeSt.ControllersTest;
 
 import com.backend.SafeSt.Entity.Customer;
-import com.backend.SafeSt.Model.CustomerModel;
-import com.backend.SafeSt.Model.TrustedContactModel;
-import com.backend.SafeSt.Repository.ConfirmationTokenRepository;
 import com.backend.SafeSt.Repository.CustomerRepository;
 import com.backend.SafeSt.Request.CustomerReq;
 import com.backend.SafeSt.Request.TrustedContactReq;
@@ -17,26 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.function.EntityResponse;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerTest {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @LocalServerPort
     int randomServerPort;
-
-    private RestTemplate restTemplate;
-    private String url;
     JSONObject personJsonObject;
     HttpHeaders headers;
+    private RestTemplate restTemplate;
+    private String url;
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -49,8 +41,6 @@ public class CustomerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         customerRepository.deleteAll();
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonNode addUser() throws Exception {
         var req = CustomerReq.builder().firstname("mahmoud").lastname("gamal").email("mahmoud.mohamedgamal1@gmail.com").password("1234").confirmationPassword("1234").phoneNumber("01012").build();
@@ -96,9 +86,9 @@ public class CustomerTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrustedContact", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Email couldn't be empty\"");
-        assertEquals(response.path("data").toString(), "null");
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Email couldn't be empty\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -113,9 +103,9 @@ public class CustomerTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrustedContact", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Email not found\"");
-        assertEquals(response.path("data").toString(), "null");
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Email not found\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -130,9 +120,9 @@ public class CustomerTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrustedContact", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"You can't add your self\"");
-        assertEquals(response.path("data").toString(), "null");
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"You can't add your self\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -148,9 +138,9 @@ public class CustomerTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrustedContact", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Created Successfully\"");
-        assertEquals(response.path("data").path("email").toString(), "\"mmge2009@yahoo.com\"");
-        assertEquals(response.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Created Successfully\"", response.path("message").toString());
+        assertEquals("\"mmge2009@yahoo.com\"", response.path("data").path("email").toString());
+        assertEquals("\"OK\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -167,57 +157,75 @@ public class CustomerTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrustedContact", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Already In Your List\"");
-        assertEquals("null",response.path("data").path("email").toString());
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Already In Your List\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
+
     @Test
     public void AddTrustedContactTest6() throws Exception {
         JsonNode node = addUser();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         var req = TrustedContactReq.builder().email("mmge2009@yahoo.com").userId(node.path("data").path("id").asInt()).build();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(req);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         try {
             restTemplate.exchange(url + "addTrustedContact", HttpMethod.POST, request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
+    @Test
+    public void AddTrustedContactTest7() throws Exception {
+        JsonNode node = addUser();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        var req = TrustedContactReq.builder().email("mahmoud.mohamedgamal1@gmail.com").userId(1010).build();
+        String json = ow.writeValueAsString(req);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        String personResultAsJsonStr =
+                restTemplate.postForObject(url + "addTrustedContact", request, String.class);
+        JsonNode response = objectMapper.readTree(personResultAsJsonStr);
+        assertEquals("\"Authentication Error\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
+    }
+
     @Test
     public void DeleteTrustedContactTest1() throws Exception {
         JsonNode node = addUser();
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         var req = TrustedContactReq.builder().email("mmge2009@yahoo.com").userId(node.path("data").path("id").asInt()).build();
-        addAnotherUserAndEnabled();
         String json = ow.writeValueAsString(req);
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         restTemplate.postForObject(url + "addTrustedContact", request, String.class);
-        request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id="+node.path("data").path("id")+"&email=" + "mmge2009@hotmail.com",HttpMethod.DELETE,request, String.class);
+        request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id=" + node.path("data").path("id") + "&email=" + "mmge2009@hotmail.com", HttpMethod.DELETE, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Trusted Email not found\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Trusted Email not found\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
+
     @Test
     public void DeleteTrustedContactTest2() throws Exception {
         JsonNode node = addUser();
         addAnotherUserAndEnabled();
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
-        HttpEntity<String> request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id="+node.path("data").path("id")+"&email=" + "mmge2009@yahoo.com",HttpMethod.DELETE,request, String.class);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id=" + node.path("data").path("id") + "&email=" + "mmge2009@yahoo.com", HttpMethod.DELETE, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Email not in your Trusted Contacts\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Email not in your Trusted Contacts\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
+
     @Test
     public void DeleteTrustedContactTest3() throws Exception {
         JsonNode node = addUser();
@@ -229,26 +237,39 @@ public class CustomerTest {
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         restTemplate.postForObject(url + "addTrustedContact", request, String.class);
-        request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id="+node.path("data").path("id")+"&email=" + "mmge2009@yahoo.com",HttpMethod.DELETE,request, String.class);
+        request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id=" + node.path("data").path("id") + "&email=" + "mmge2009@yahoo.com", HttpMethod.DELETE, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Deleted Successfully\"");
-        assertEquals("true",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Deleted Successfully\"", res.path("message").toString());
+        assertEquals("true", res.path("data").toString());
+        assertEquals("\"OK\"", res.path("statusCode").toString());
     }
+
     @Test
     public void DeleteTrustedContactTest4() throws Exception {
         JsonNode node = addUser();
-        addAnotherUserAndEnabled();
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
-        HttpEntity<String> request = new HttpEntity<>(null,headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
         try {
-            restTemplate.exchange(url + "deleteTrustedContact?id="+node.path("data").path("id")+"&email=" + "mmge2009@yahoo.com",HttpMethod.DELETE,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "deleteTrustedContact?id=" + node.path("data").path("id") + "&email=" + "mmge2009@yahoo.com", HttpMethod.DELETE, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
+    @Test
+    public void DeleteTrustedContactTest5() throws Exception {
+        JsonNode node = addUser();
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "deleteTrustedContact?id=1010&email=" + "mmge2009@yahoo.com", HttpMethod.DELETE, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
+    }
+
     @Test
     public void GetPersonalTest1() throws Exception {
         JsonNode node = addUser();
@@ -257,12 +278,13 @@ public class CustomerTest {
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "getPersonalInfo?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getPersonalInfo?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals(node.path("data").path("id").asInt(),res.path("data").path("id").asInt());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Executed Successfully\"", res.path("message").toString());
+        assertEquals(node.path("data").path("id").asInt(), res.path("data").path("id").asInt());
+        assertEquals("\"OK\"", res.path("statusCode").toString() );
     }
+
     @Test
     public void GetPersonalTest2() throws Exception {
         JsonNode node = addUser();
@@ -272,11 +294,26 @@ public class CustomerTest {
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         try {
-            restTemplate.exchange(url + "getPersonalInfo?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "getPersonalInfo?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
+    @Test
+    public void GetPersonalTest3() throws Exception {
+        JsonNode node = addUser();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(null);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getPersonalInfo?id=1010", HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
+    }
+
     @Test
     public void CheckTokenTest1() throws Exception {
         JsonNode node = addUser();
@@ -285,12 +322,13 @@ public class CustomerTest {
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "checkTokenAvailability?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url + "checkTokenAvailability?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals("true",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Executed Successfully\"" , res.path("message").toString());
+        assertEquals("true", res.path("data").toString());
+        assertEquals("\"OK\"",res.path("statusCode").toString());
     }
+
     @Test
     public void CheckTokenTest2() throws Exception {
         JsonNode node = addUser();
@@ -300,10 +338,24 @@ public class CustomerTest {
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         try {
-            restTemplate.exchange(url + "checkTokenAvailability?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "checkTokenAvailability?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
+    }
+    @Test
+    public void CheckTokenTest3() throws Exception {
+        JsonNode node = addUser();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(null);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "checkTokenAvailability?id=1010", HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"",res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"",res.path("statusCode").toString());
     }
 
     @Test
@@ -317,26 +369,42 @@ public class CustomerTest {
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         restTemplate.postForObject(url + "addTrustedContact", request, String.class);
-        request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "getNumOfTrusted?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
+        request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getNumOfTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals(1,res.path("data").asInt());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"Executed Successfully\"",res.path("message").toString());
+        assertEquals(1, res.path("data").asInt());
+        assertEquals( "\"OK\"",res.path("statusCode").toString());
     }
+
     @Test
     public void GetNumOfTrustedTest2() throws Exception {
         JsonNode node = addUser();
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        addAnotherUserAndEnabled();
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
-        HttpEntity<String> request = new HttpEntity<>(null,headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
         try {
-            restTemplate.exchange(url + "getNumOfTrusted?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "getNumOfTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
+    }
+    @Test
+    public void GetNumOfTrustedTest3() throws Exception {
+        JsonNode node = addUser();
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        var req = TrustedContactReq.builder().email("mmge2009@yahoo.com").userId(node.path("data").path("id").asInt()).build();
+        String json = ow.writeValueAsString(req);
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        restTemplate.postForObject(url + "addTrustedContact", request, String.class);
+        request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getNumOfTrusted?id=1010", HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals("\"Authentication Error\"",res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -350,39 +418,50 @@ public class CustomerTest {
         headers.setBearerAuth(token.substring(1, token.length() - 1));
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         restTemplate.postForObject(url + "addTrustedContact", request, String.class);
-        request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
+        request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals("\"mmge2009@yahoo.com\"",res.path("data").get(0).path("email").toString());
+        assertEquals("\"mmge2009@yahoo.com\"", res.path("data").get(0).path("email").toString());
         assertEquals(res.path("statusCode").toString(), "\"OK\"");
     }
 
     @Test
     public void GetAllTrustedTest2() throws Exception {
         JsonNode node = addUser();
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1));
-        HttpEntity<String> request = new HttpEntity<>(null,headers);
-        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"User Don't have Trusted Contacts\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
+
     @Test
     public void GetAllTrustedTest3() throws Exception {
         JsonNode node = addUser();
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String token = node.path("data").path("token").toString();
         headers.setBearerAuth(token.substring(1, token.length() - 1) + "de");
-        HttpEntity<String> request = new HttpEntity<>(null,headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
         try {
-            restTemplate.exchange(url + "getAllTrusted?id="+node.path("data").path("id"),HttpMethod.GET,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "getAllTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
+    }
+    @Test
+    public void GetAllTrustedTest4() throws Exception {
+        JsonNode node = addUser();
+        String token = node.path("data").path("token").toString();
+        headers.setBearerAuth(token.substring(1, token.length() - 1));
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "getAllTrusted?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
+        JsonNode res = objectMapper.readTree(response.getBody());
+        assertEquals(res.path("message").toString(), "\"Authentication Error\"");
+        assertEquals("null", res.path("data").toString());
+        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
 
     @Test
@@ -393,7 +472,7 @@ public class CustomerTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(null);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        String personResultAsJsonStr = restTemplate.postForObject(url + "setVoice?saved=0&id="+node.path("data").path("id"), request, String.class);
+        String personResultAsJsonStr = restTemplate.postForObject(url + "setVoice?saved=0&id=" + node.path("data").path("id"), request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
         assertEquals(response.path("message").toString(), "\"Executed Successfully\"");
         assertEquals(response.path("data").toString(), "false");
@@ -408,7 +487,7 @@ public class CustomerTest {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(null);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        String personResultAsJsonStr = restTemplate.postForObject(url + "setVoice?saved=1&id="+node.path("data").path("id"), request, String.class);
+        String personResultAsJsonStr = restTemplate.postForObject(url + "setVoice?saved=1&id=" + node.path("data").path("id"), request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
         assertEquals(response.path("message").toString(), "\"Executed Successfully\"");
         assertEquals(response.path("data").toString(), "true");
@@ -424,9 +503,9 @@ public class CustomerTest {
         String json = ow.writeValueAsString(null);
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         try {
-            restTemplate.exchange(url + "setVoice?saved=1?id="+node.path("data").path("id"),HttpMethod.POST,request, String.class);
-        }catch (HttpClientErrorException e){
-            assertEquals("403 FORBIDDEN",e.getStatusCode().toString());
+            restTemplate.exchange(url + "setVoice?saved=1?id=" + node.path("data").path("id"), HttpMethod.POST, request, String.class);
+        } catch (HttpClientErrorException e) {
+            assertEquals("403 FORBIDDEN", e.getStatusCode().toString());
         }
     }
 }

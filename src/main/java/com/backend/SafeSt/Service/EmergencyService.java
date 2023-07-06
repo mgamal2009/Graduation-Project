@@ -74,7 +74,7 @@ public class EmergencyService {
                 .customer(c)
                 .build();
 
-        if (!(req.getCategory().equals("CarFault") || req.getCategory().equals("Fire") || req.getCategory().equals("UserDidntArrive"))) {
+        if (!(req.getCategory().equals("CarFault") || req.getCategory().equals("Fire") || req.getCategory().equals("UserDidntArrive") || req.getCategory().equals("InDanger"))) {
             var report = Report.builder()
                     .date(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime()))
                     .category(ReportCat.valueOf(req.getCategory()))

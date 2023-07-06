@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TripTest {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @LocalServerPort
     int randomServerPort;
-
-    private RestTemplate restTemplate;
-    private String url;
     JSONObject personJsonObject;
     HttpHeaders headers;
+    private RestTemplate restTemplate;
+    private String url;
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -47,8 +47,6 @@ public class TripTest {
         customerRepository.deleteAll();
         tripRepository.deleteAll();
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JsonNode addUser() throws Exception {
         var req = CustomerReq.builder().firstname("mahmoud").lastname("gamal").email("mahmoud.mohamedgamal1@gmail.com").password("1234").confirmationPassword("1234").phoneNumber("01012").build();
@@ -86,11 +84,11 @@ public class TripTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrip", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"Created Successfully\"");
+        assertEquals("\"Created Successfully\"", response.path("message").toString());
         assertNotNull(response.path("data").path("id"));
         assertEquals(node.path("data").path("id"), response.path("data").path("customerId"));
         assertEquals("false", response.path("data").path("ended").toString());
-        assertEquals(response.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -113,9 +111,9 @@ public class TripTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "addTrip", request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals(response.path("message").toString(), "\"There is an ingoing trip\"");
-        assertEquals("null",response.path("data").toString());
-        assertEquals(response.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"There is an ingoing trip\"", response.path("message").toString());
+        assertEquals("null", response.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 
     @Test
@@ -164,9 +162,9 @@ public class TripTest {
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "endTrip", HttpMethod.PUT, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Trip not Found\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Trip not Found\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -193,9 +191,9 @@ public class TripTest {
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "endTrip", HttpMethod.PUT, request, String.class);
         res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
+        assertEquals("\"Executed Successfully\"", res.path("message").toString());
         assertEquals("true", res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -224,9 +222,9 @@ public class TripTest {
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "endTrip", HttpMethod.PUT, request, String.class);
         res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Trip already ended\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Trip already ended\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -283,9 +281,9 @@ public class TripTest {
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "cancelTrip?id=" + tripReq.getId() + "&customerId=" + tripReq.getCustomerId(), HttpMethod.DELETE, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Trip not Found\"");
-        assertEquals("null",res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
+        assertEquals("\"Trip not Found\"", res.path("message").toString());
+        assertEquals("null", res.path("data").toString());
+        assertEquals("\"INTERNAL_SERVER_ERROR\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -312,9 +310,9 @@ public class TripTest {
         ResponseEntity<String> response = restTemplate.exchange(url +
                 "cancelTrip?id=" + tripReq.getId() + "&customerId=" + tripReq.getCustomerId(), HttpMethod.DELETE, request, String.class);
         res = objectMapper.readTree(response.getBody());
-        assertEquals(res.path("message").toString(), "\"Deleted Successfully\"");
+        assertEquals("\"Deleted Successfully\"", res.path("message").toString());
         assertEquals("true", res.path("data").toString());
-        assertEquals(res.path("statusCode").toString(), "\"OK\"");
+        assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 
     @Test
@@ -344,7 +342,7 @@ public class TripTest {
                 "cancelTrip?id=" + tripReq.getId() + "&customerId=" + tripReq.getCustomerId(), HttpMethod.DELETE, request, String.class);
         res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Trip already ended\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
 
@@ -390,7 +388,7 @@ public class TripTest {
                 "checkIngoingTrip?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"OK\"");
     }
 
@@ -423,7 +421,7 @@ public class TripTest {
                 "checkIngoingTrip?id=" + tripReq.getCustomerId(), HttpMethod.GET, request, String.class);
         res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Executed Successfully\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"OK\"");
     }
 
@@ -455,7 +453,7 @@ public class TripTest {
                 "checkIngoingTrip?id=" + tripReq.getCustomerId(), HttpMethod.GET, request, String.class);
         res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Time ended Are you Ok?\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
 
@@ -541,7 +539,7 @@ public class TripTest {
                 "extendTrip", HttpMethod.PUT, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals(res.path("message").toString(), "\"Trip not Found\"");
-        assertEquals("null",res.path("data").toString());
+        assertEquals("null", res.path("data").toString());
         assertEquals(res.path("statusCode").toString(), "\"INTERNAL_SERVER_ERROR\"");
     }
 

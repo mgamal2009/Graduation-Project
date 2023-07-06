@@ -30,21 +30,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 public class AuthenticationTest {
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
-
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
     @BeforeEach
     public void clear() {

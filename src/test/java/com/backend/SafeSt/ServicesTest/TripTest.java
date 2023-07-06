@@ -27,24 +27,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 public class TripTest {
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
     private TripRepository tripRepository;
-
     @Autowired
     private TripService tripService;
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
     private CustomerReq req;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
     @BeforeEach
     public void clear() {
@@ -300,6 +298,7 @@ public class TripTest {
                 .estimatedTime(180)
                 .build();
         TripModel modelAdded = tripService.createTrip(tripReq, auth);
+        tripReq.setId(modelAdded.getId());
         tripReq.setAddMin(5);
         TripModel model = tripService.extendTrip(tripReq, auth);
         assertEquals(modelAdded.getId(), model.getId());
