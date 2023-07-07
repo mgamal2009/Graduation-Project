@@ -79,7 +79,7 @@ public class TripService {
         CustomerService.checkLoggedIn(id, auth);
         ArrayList<Trip> list = tripRepository.findAllByCustomer_IdAndAndEnded(id, false);
         if (list.isEmpty()) {
-            return null;
+            return TripModel.builder().id(-1).build();
         }
 
         long seconds = ChronoUnit.SECONDS.between(ZonedDateTime.now(ZoneId.of("Africa/Cairo")).toLocalDateTime(), list.get(0).getEstimatedEnd().toLocalDateTime());
