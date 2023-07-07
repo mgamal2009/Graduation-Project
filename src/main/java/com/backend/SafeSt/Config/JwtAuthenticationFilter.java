@@ -61,6 +61,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException ex) {
             response.setStatus(410);
+        } catch (Exception e) {
+            response.setStatus(403);
         }
     }
 }
