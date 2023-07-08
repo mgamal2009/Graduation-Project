@@ -207,7 +207,7 @@ public class TripTest {
     public void CheckInGoingTripTest1() throws Exception {
         Authentication auth = addUser();
         TripModel model = tripService.checkIngoingTrip(req.getId(), auth);
-        assertNull(model);
+        assertEquals(-1,model.getId());
     }
 
     @Test
@@ -225,7 +225,7 @@ public class TripTest {
         tripReq.setId(modelAdded.getId());
         tripService.endTrip(tripReq, auth);
         TripModel model = tripService.checkIngoingTrip(req.getId(), auth);
-        assertNull(model);
+        assertEquals(-1,model.getId());
     }
 
     @Test

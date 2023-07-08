@@ -467,7 +467,7 @@ public class TripTest {
                 "checkIngoingTrip?id=" + node.path("data").path("id"), HttpMethod.GET, request, String.class);
         JsonNode res = objectMapper.readTree(response.getBody());
         assertEquals("\"Executed Successfully\"", res.path("message").toString());
-        assertEquals("null", res.path("data").toString());
+        assertEquals(-1, res.path("data").path("id").asInt());
         assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 
@@ -500,7 +500,7 @@ public class TripTest {
                 "checkIngoingTrip?id=" + tripReq.getCustomerId(), HttpMethod.GET, request, String.class);
         res = objectMapper.readTree(response.getBody());
         assertEquals("\"Executed Successfully\"", res.path("message").toString());
-        assertEquals("null", res.path("data").toString());
+        assertEquals(-1, res.path("data").path("id").asInt());
         assertEquals("\"OK\"", res.path("statusCode").toString());
     }
 

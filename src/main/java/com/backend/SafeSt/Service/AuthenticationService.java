@@ -18,6 +18,7 @@ import com.backend.SafeSt.Util.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,22 +65,27 @@ public class AuthenticationService {
         return true;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var customer = (Customer) auth.getPrincipal();
-        var jwtToken = jwtService.generateToken(customer);
-        deleteCustomerTokens(customer);
-        saveCustomerToken(customer, jwtToken);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .id(customer.getId())
-                .savedVoice(customer.isSavedVoice())
-                .build();
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception {
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            var customer = (Customer) auth.getPrincipal();
+            var jwtToken = jwtService.generateToken(customer);
+            deleteCustomerTokens(customer);
+            saveCustomerToken(customer, jwtToken);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .id(customer.getId())
+                    .savedVoice(customer.isSavedVoice())
+                    .build();
+        }catch (DisabledException e){
+            throw new Exception("Please Confirm your Account First!!");
+        }
+
     }
 
     public MainResponse confirmMail(String confirmationToken) throws Exception {

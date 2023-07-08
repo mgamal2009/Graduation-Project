@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
@@ -87,7 +86,7 @@ public class AuthenticationTest {
     public void LoginTest2() throws Exception {
         var req = CustomerReq.builder().firstname("mahmoud").lastname("gamal").email("mahmoud.mohamedgamal1@gmail.com").password("1234").confirmationPassword("1234").phoneNumber("01012").build();
         authenticationService.register(req);
-        assertThrows(DisabledException.class, () -> authenticationService.authenticate(AuthenticationRequest.builder().email("mahmoud.mohamedgamal1@gmail.com").password("1234").build()), "User Is Disabled");
+        assertThrows(Exception.class, () -> authenticationService.authenticate(AuthenticationRequest.builder().email("mahmoud.mohamedgamal1@gmail.com").password("1234").build()), "Please Confirm your Account First!!");
     }
 
     @Test

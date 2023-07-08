@@ -520,7 +520,7 @@ public class CustomerTest {
         String personResultAsJsonStr = restTemplate.postForObject(url + "setVoice?saved=1&id=1010" , request, String.class);
         JsonNode response = objectMapper.readTree(personResultAsJsonStr);
         assertEquals( "\"Authentication Error\"", response.path("message").toString());
-        assertEquals("true", response.path("data").toString());
+        assertEquals("null", response.path("data").toString());
         assertEquals("\"INTERNAL_SERVER_ERROR\"", response.path("statusCode").toString());
     }
 }

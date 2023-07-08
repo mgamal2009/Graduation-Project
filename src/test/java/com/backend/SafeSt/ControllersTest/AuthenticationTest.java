@@ -138,7 +138,7 @@ public class AuthenticationTest {
         String personResultAsJsonStr =
                 restTemplate.postForObject(url + "authenticate", request, String.class);
         JsonNode root = objectMapper.readTree(personResultAsJsonStr);
-        assertEquals("\"User is disabled\"", root.path("message").toString());
+        assertEquals("\"Please Confirm your Account First!!\"", root.path("message").toString());
         assertEquals("null", root.path("data").toString());
         assertEquals("\"INTERNAL_SERVER_ERROR\"", root.path("statusCode").toString());
     }
